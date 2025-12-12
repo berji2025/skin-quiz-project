@@ -1,45 +1,1293 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>肌膚自我檢測 - 專業版</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Berji肌膚您的管理小助手</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+        
+        :root {
+            --primary: #ffb6c1;
+            --secondary: #ffccd5;
+            --accent: #ff7bac;
+            --dark: #5a4a4f;
+            --light: #fff5f7;
+            --text: #333333;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="white" opacity="0.1"/></svg>');
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            /* transform: translateY(-5px); */
+            /* box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); */
+        }
+        
+        .question-container {
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .question {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .option {
+            padding: 18px 20px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #f0f0f0;
+        }
+        
+        .option:hover {
+            background-color: var(--secondary);
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(255, 123, 172, 0.3);
+        }
+        
+        .btn:hover {
+            background-color: #ff5a94;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 123, 172, 0.4);
+        }
+        
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            box-shadow: none;
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .results-container {
+            display: none;
+        }
+        
+        .skin-type {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(to right, #fff5f7, white);
+            border-radius: 15px;
+            border-left: 8px solid var(--accent);
+        }
+        
+        .skin-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-right: 30px;
+        }
+        
+        .skin-info h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .skin-info p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .advice-section {
+            margin-top: 40px;
+        }
+        
+        .advice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .advice-card {
+            padding: 25px;
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--primary);
+        }
+        
+        .advice-card h4 {
+            font-size: 1.3rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .advice-card h4 i {
+            color: var(--accent);
+        }
+        
+        .personality-section {
+            background: linear-gradient(to right, #f8f4ff, #fff5f9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 8px solid #c8a2c8;
+        }
+        
+        .blessing {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(to right, #ffccd5, #ffb6c1);
+            border-radius: 15px;
+            margin-top: 30px;
+            color: white;
+        }
+        
+        .blessing h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .blessing-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 20px 0;
+            min-height: 40px;
+        }
+        
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            color: #888;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-animation {
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .toggle-advanced {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+            padding: 10px 20px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn:hover {
+            background-color: rgba(255, 123, 172, 0.1);
+        }
+        
+        .advanced-questions {
+            display: none;
+        }
+        
+        .advanced-questions.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .advice-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .skin-type {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .skin-icon {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>✨ 肌膚類型自我檢測 ✨</h1>
-        <form id="skin-quiz-form">
-            <div class="question-group">
-                <label>1. 洗臉後，T字部位（額頭、鼻子）大約多久開始感到出油？</label>
-                <input type="radio" name="q1_oil" value="fast" required> 半小時內 (油性傾向)<br>
-                <input type="radio" name="q1_oil" value="medium"> 2-4 小時後 (混合性傾向)<br>
-                <input type="radio" name="q1_oil" value="slow"> 超過 5 小時或幾乎不出油 (乾性傾向)
+        <header>
+            <div class="logo">
+                <i class="fas fa-spa"></i>
             </div>
-
-            <div class="question-group">
-                <label>2. 臉頰或眼周在洗臉後或下午是否常感到緊繃、乾燥？</label>
-                <input type="radio" name="q2_dry" value="yes" required> 是，常常感到緊繃不適 (乾性/混合偏乾)<br>
-                <input type="radio" name="q2_dry" value="no"> 否，很少有緊繃感 (油性/中性)
-            </div>
-
-            <div class="question-group">
-                <label>3. 換季或使用新產品時，臉部是否容易泛紅、搔癢或刺痛？</label>
-                <input type="radio" name="q3_sensitive" value="yes" required> 是，我的皮膚很敏感 (敏感性傾向)<br>
-                <input type="radio" name="q3_sensitive" value="no"> 否，皮膚適應力強 (非敏感性傾向)
+            <h1>Berji肌膚您的管理小助手</h1>
+            <p class="tagline">專業肌膚檢測 × 個人化護理建議 × 膚質人格分析</p>
+        </header>
+        
+        <div class="card">
+            <h2 class="section-title">基礎肌膚檢測</h2>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span>檢測進度</span>
+                    <span id="progressText">0/6</span>
+                </div>
             </div>
             
-            <button type="submit" id="submit-button">查看我的肌膚報告</button>
-        </form>
-
-        <div id="result-area" class="result-box" style="display: none;">
-            <h2>🎉 您的肌膚檢測報告 🎉</h2>
-            <h3 id="skin-type-display"></h3>
-            <h4>📝 詳細分析與保養建議：</h4>
-            <div id="recommendation-display"></div>
+            <div id="questionContainer">
+                </div>
+            
+            <div class="toggle-advanced">
+                <button class="toggle-btn" id="toggleAdvanced">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>進階檢測（皮膚狀態分析）</span>
+                </button>
+            </div>
+            
+            <div class="advanced-questions" id="advancedQuestions">
+                </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="prevBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    上一題
+                </button>
+                <button class="btn" id="nextBtn">
+                    下一題
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="btn" id="submitBtn" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    查看檢測結果
+                </button>
+            </div>
         </div>
+        
+        <div class="results-container" id="resultsContainer">
+            <div class="card result-animation">
+                <h2 class="section-title">您的肌膚檢測結果</h2>
+                
+                <div class="skin-type" id="skinTypeResult">
+                    </div>
+                
+                <div class="advice-section">
+                    <h3 class="section-title">護膚建議</h3>
+                    <div class="advice-grid" id="skincareAdvice">
+                        </div>
+                </div>
+                
+                <div class="advice-section">
+                    <h3 class="section-title">飲食建議</h3>
+                    <div class="advice-grid" id="dietAdvice">
+                        </div>
+                </div>
+                
+                <div class="personality-section" id="personalityResult">
+                    </div>
+                
+                <div class="blessing">
+                    <h3><i class="fas fa-heart"></i> Berji的祝福</h3>
+                    <p class="blessing-text" id="blessingText"></p>
+                    <button class="btn" id="newBlessingBtn">
+                        <i class="fas fa-redo"></i>
+                        獲取新的祝福
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-outline" id="restartBtn">
+                        <i class="fas fa-redo-alt"></i>
+                        重新檢測
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Berji肌膚您的管理小助手 &copy; 2023 | 本檢測結果僅供參考，如有皮膚問題請諮詢專業醫師</p>
+        </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // 問題數據
+        const basicQuestions = [
+            {
+                id: 1,
+                question: "您洗完臉後1小時，不使用任何護膚品，臉部感覺如何？",
+                options: [
+                    { text: "全臉緊繃，甚至有點脫皮", value: "dry" },
+                    { text: "T字區（額頭、鼻子）出油，臉頰正常或偏乾", value: "combination" },
+                    { text: "全臉明顯出油，感覺油亮", value: "oily" },
+                    { text: "臉部舒適，不油不乾", value: "normal" },
+                    { text: "臉部有刺痛、泛紅或癢的感覺", value: "sensitive" }
+                ]
+            },
+            {
+                id: 2,
+                question: "您的臉部毛孔狀況如何？",
+                options: [
+                    { text: "幾乎看不見毛孔", value: "dry" },
+                    { text: "T字區毛孔明顯，臉頰毛孔細小", value: "combination" },
+                    { text: "全臉毛孔粗大，特別是鼻子和臉頰", value: "oily" },
+                    { text: "毛孔細小，分佈均勻", value: "normal" },
+                    { text: "毛孔粗大且容易發紅", value: "sensitive" }
+                ]
+            },
+            {
+                id: 3,
+                question: "您臉部是否容易長痘痘或粉刺？",
+                options: [
+                    { text: "很少長痘痘，皮膚偏乾", value: "dry" },
+                    { text: "T字區容易長痘痘和粉刺，臉頰較少", value: "combination" },
+                    { text: "全臉容易長痘痘、粉刺，尤其是下巴和額頭", value: "oily" },
+                    { text: "偶爾長痘痘，但很快恢復", value: "normal" },
+                    { text: "容易長痘痘，且發紅不易消退", value: "sensitive" }
+                ]
+            },
+            {
+                id: 4,
+                question: "您的臉部是否有細紋或皺紋？",
+                options: [
+                    { text: "有明顯細紋，特別是眼周和嘴角", value: "dry" },
+                    { text: "臉頰有細紋，T字區較少", value: "combination" },
+                    { text: "細紋較少，但可能有毛孔粗大問題", value: "oily" },
+                    { text: "幾乎沒有細紋，皮膚有彈性", value: "normal" },
+                    { text: "細紋伴隨皮膚泛紅", value: "sensitive" }
+                ]
+            },
+            {
+                id: 5,
+                question: "您的臉部是否容易泛紅或敏感？",
+                options: [
+                    { text: "皮膚薄，容易泛紅，有時會癢", value: "sensitive" },
+                    { text: "T字區不易泛紅，臉頰容易泛紅", value: "combination" },
+                    { text: "全臉不易泛紅，但容易出油", value: "oily" },
+                    { text: "皮膚健康，不易泛紅", value: "normal" },
+                    { text: "皮膚乾燥時容易泛紅", value: "dry" }
+                ]
+            },
+            {
+                id: 6,
+                question: "您的皮膚在換季時的反應如何？",
+                options: [
+                    { text: "非常乾燥，甚至脫皮", value: "dry" },
+                    { text: "T字區油，臉頰乾燥", value: "combination" },
+                    { text: "出油情況變化不大", value: "oily" },
+                    { text: "適應良好，變化不明顯", value: "normal" },
+                    { text: "容易過敏、泛紅或發癢", value: "sensitive" }
+                ]
+            }
+        ];
+
+        // 進階問題數據
+        const advancedQuestions = [
+            {
+                id: 7,
+                question: "您的皮膚是否有色素沉澱或斑點問題？",
+                options: [
+                    { text: "有明顯斑點或色素沉澱", value: "pigmentation" },
+                    { text: "有些許曬斑或痘疤", value: "lightPigmentation" },
+                    { text: "幾乎沒有斑點問題", value: "noPigmentation" },
+                    { text: "斑點伴隨皮膚敏感", value: "sensitivePigmentation" }
+                ]
+            },
+            {
+                id: 8,
+                question: "您的皮膚彈性如何？",
+                options: [
+                    { text: "皮膚鬆弛，缺乏彈性", value: "loose" },
+                    { text: "臉頰有點鬆弛，但整體還行", value: "slightlyLoose" },
+                    { text: "皮膚緊緻有彈性", value: "tight" },
+                    { text: "皮膚薄，彈性一般", value: "thin" }
+                ]
+            },
+            {
+                id: 9,
+                question: "您是否有黑眼圈或眼周問題？",
+                options: [
+                    { text: "有明顯黑眼圈和眼袋", value: "darkCircles" },
+                    { text: "有細紋但黑眼圈不明顯", value: "wrinkles" },
+                    { text: "眼周浮腫", value: "puffy" },
+                    { text: "眼周問題不明顯", value: "none" }
+                ]
+            },
+            {
+                id: 10,
+                question: "您的皮膚在日曬後的反應如何？",
+                options: [
+                    { text: "容易曬傷、泛紅", value: "burn" },
+                    { text: "容易曬黑，但不太會曬傷", value: "tan" },
+                    { text: "曬後皮膚變得很乾", value: "dryAfterSun" },
+                    { text: "變化不大，恢復快", value: "resistant" }
+                ]
+            }
+        ];
+
+        // 皮膚類型結果
+        const skinTypeResults = {
+            dry: {
+                name: "乾性肌膚",
+                icon: "fas fa-tint",
+                description: "您的皮膚缺乏油脂和水分，容易產生細紋和緊繃感。需要加強保濕和滋潤，避免過度清潔。",
+                personality: "乾性肌膚的人通常謹慎細心，注重細節，就像您對待皮膚一樣認真。您可能傾向於深思熟慮，喜歡穩定和有規律的生活。"
+            },
+            oily: {
+                name: "油性肌膚",
+                icon: "fas fa-oil-can",
+                description: "您的皮脂分泌旺盛，容易有毛孔粗大和痘痘問題。需要適當控油和保持水油平衡。",
+                personality: "油性肌膚的人通常充滿活力，熱情外向，就像您的皮脂腺一樣活躍。您可能喜歡社交，充滿創造力，總是充滿能量。"
+            },
+            combination: {
+                name: "混合性肌膚",
+                icon: "fas fa-balance-scale",
+                description: "您的T字區油膩，臉頰乾燥。需要分區護理，T字區控油，臉頰保濕。",
+                personality: "混合性肌膚的人通常具有雙重特質，既能適應變化，又能保持平衡。您可能善於在不同情境中調整自己，具有很好的適應能力。"
+            },
+            normal: {
+                name: "中性肌膚",
+                icon: "fas fa-star",
+                description: "恭喜您！您的皮膚處於理想狀態，水油平衡，毛孔細緻。只需基礎保養即可維持好膚質。",
+                personality: "中性肌膚的人通常平和穩定，情緒管理良好。您可能處事從容，善於維持生活中的平衡，是朋友眼中的穩定力量。"
+            },
+            sensitive: {
+                name: "敏感性肌膚",
+                icon: "fas fa-allergies",
+                description: "您的皮膚容易受刺激，出現泛紅、癢或刺痛感。需要溫和護理，避免刺激性成分。",
+                personality: "敏感性肌膚的人通常直覺敏銳，富有同理心，就像您的皮膚對外界反應敏感一樣。您可能很能體會他人的感受，是個細心的傾聽者。"
+            }
+        };
+
+        // 護膚建議
+        const skincareAdvice = {
+            dry: [
+                {
+                    title: "清潔",
+                    icon: "fas fa-pump-soap",
+                    content: "使用溫和、不含皂鹼的潔面產品，避免過度清潔。水溫不宜過高，以免帶走過多油脂。"
+                },
+                {
+                    title: "保濕",
+                    icon: "fas fa-tint",
+                    content: "選擇含有玻尿酸、甘油、角鯊烷等保濕成分的產品。早晚使用保濕精華和乳霜，每周敷2-3次保濕面膜。"
+                },
+                {
+                    title: "防曬",
+                    icon: "fas fa-sun",
+                    content: "每天使用SPF30以上的防曬霜，避免紫外線加速皮膚乾燥和老化。選擇滋潤型的防曬產品。"
+                },
+                {
+                    title: "特殊護理",
+                    icon: "fas fa-heart",
+                    content: "定期使用保濕精華油，晚上可使用較滋潤的晚霜。避免使用含酒精、酸類等刺激性成分的產品。"
+                }
+            ],
+            oily: [
+                {
+                    title: "清潔",
+                    icon: "fas fa-pump-soap",
+                    content: "使用溫和控油潔面產品，每天清潔2次，避免過度清潔導致皮脂過度分泌。"
+                },
+                {
+                    title: "保濕",
+                    icon: "fas fa-tint",
+                    content: "選擇清爽的保濕產品，如水凝膠、凝露質地。油性肌也需要保濕，以維持水油平衡。"
+                },
+                {
+                    title: "控油",
+                    icon: "fas fa-wind",
+                    content: "使用含有水楊酸、果酸或煙酰胺的產品幫助控油和疏通毛孔。隨身攜帶吸油面紙，但不要過度使用。"
+                },
+                {
+                    title: "特殊護理",
+                    icon: "fas fa-heart",
+                    content: "每周使用1-2次深層清潔面膜或泥膜。避免使用過於滋潤的產品，選擇標註'無油'或'清爽'的護膚品。"
+                }
+            ],
+            combination: [
+                {
+                    title: "分區清潔",
+                    icon: "fas fa-pump-soap",
+                    content: "T字區可重點清潔，臉頰處輕輕帶過。選擇溫和的潔面產品，避免全臉使用強力控油產品。"
+                },
+                {
+                    title: "分區保濕",
+                    icon: "fas fa-tint",
+                    content: "T字區使用清爽保濕品，臉頰使用較滋潤的保濕產品。可準備兩種不同質地的保濕產品分區使用。"
+                },
+                {
+                    title: "防曬",
+                    icon: "fas fa-sun",
+                    content: "選擇清爽不黏膩的防曬產品，重點塗抹於全臉，特別是容易出油的T字區。"
+                },
+                {
+                    title: "特殊護理",
+                    icon: "fas fa-heart",
+                    content: "每周可在T字區使用深層清潔面膜，臉頰使用保濕面膜。避免使用全臉強效控油或強效滋潤的產品。"
+                }
+            ],
+            normal: [
+                {
+                    title: "基礎清潔",
+                    icon: "fas fa-pump-soap",
+                    content: "使用溫和潔面產品，早晚各一次。避免過度清潔，維持皮膚自然平衡狀態。"
+                },
+                {
+                    title: "基礎保濕",
+                    icon: "fas fa-tint",
+                    content: "使用輕盈的保濕產品，維持皮膚水潤度。根據季節調整保濕產品，夏季清爽，冬季滋潤一些。"
+                },
+                {
+                    title: "防曬",
+                    icon: "fas fa-sun",
+                    content: "每天使用SPF30以上的防曬霜，預防光老化和色素沉澱。選擇質地舒適的防曬產品。"
+                },
+                {
+                    title: "維持健康",
+                    icon: "fas fa-heart",
+                    content: "保持規律作息和健康飲食，定期運動。即使膚質良好，也要避免不良習慣破壞皮膚平衡。"
+                }
+            ],
+            sensitive: [
+                {
+                    title: "溫和清潔",
+                    icon: "fas fa-pump-soap",
+                    content: "使用專為敏感肌設計的潔面產品，無香料、無酒精。清潔時動作輕柔，避免摩擦。"
+                },
+                {
+                    title: "舒緩保濕",
+                    icon: "fas fa-tint",
+                    content: "選擇含有舒緩成分如積雪草、神經酰胺、燕麥提取物的保濕產品。避免複雜成分和香精。"
+                },
+                {
+                    title: "防曬",
+                    icon: "fas fa-sun",
+                    content: "使用物理性防曬（含氧化鋅或二氧化鈦），較少引起刺激。每天防曬，避免紫外線加重敏感。"
+                },
+                {
+                    title: "特殊護理",
+                    icon: "fas fa-heart",
+                    content: "使用新產品前先做皮膚測試。避免使用去角質產品和刺激性成分（如酒精、酸類）。盡量簡化護膚步驟。"
+                }
+            ]
+        };
+
+        // 飲食建議
+        const dietAdvice = {
+            dry: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "富含Omega-3的食物（鮭魚、亞麻籽）、堅果、酪梨、橄欖油、深綠色蔬菜、胡蘿蔔、地瓜。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "咖啡因、酒精、過鹹食物、油炸食品，這些會加速水分流失。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，可加入檸檬片或黃瓜片增加風味。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "維生素E、Omega-3脂肪酸、玻尿酸補充劑有助皮膚保濕。"
+                }
+            ],
+            oily: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "富含鋅的食物（南瓜籽、扁豆）、富含維生素A的食物（胡蘿蔔、菠菜）、全穀類、綠葉蔬菜。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "高糖食物、乳製品（特別是脫脂牛奶）、油炸食品、辛辣食物，這些可能刺激皮脂分泌。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，可喝綠茶幫助調節皮脂分泌。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "鋅、維生素B群、益生菌有助調節皮脂分泌和腸道健康。"
+                }
+            ],
+            combination: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "富含維生素C的食物（奇異果、甜椒）、富含抗氧化物的食物（莓果、綠茶）、Omega-3脂肪酸。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "過油過鹹食物、精製糖、加工食品，這些可能加劇T字區出油。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，保持身體水分平衡。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "維生素B群、鋅、Omega-3脂肪酸有助調節皮膚狀態。"
+                }
+            ],
+            normal: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "各種顏色的蔬果、優質蛋白質（魚、豆類）、全穀類、健康脂肪（堅果、橄欖油）。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "過量加工食品、含糖飲料、酒精，這些可能破壞皮膚健康平衡。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，維持身體和皮膚的良好狀態。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "綜合維生素、抗氧化劑（維生素C、E）有助維持皮膚健康。"
+                }
+            ],
+            sensitive: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "富含抗氧化物的食物（莓果、綠葉蔬菜）、富含Omega-3的食物（鮭魚、核桃）、薑黃、益生菌食物（優格、泡菜）。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "可能引起過敏的食物（如蝦、蟹、芒果等，視個人情況而定）、辛辣食物、酒精、加工食品。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，可喝洋甘菊茶幫助舒緩。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "益生菌、Omega-3脂肪酸、槲皮素（quercetin）有助減輕過敏反應。"
+                }
+            ]
+        };
+
+        // 祝福語
+        const blessings = [
+            "願您的皮膚如春日花朵般綻放光彩，每一天都充滿自信與美麗！",
+            "皮膚是健康的鏡子，願您內外兼修，展現最自然動人的光彩！",
+            "護膚是一場溫柔的馬拉松，願您享受每一個步驟，見證自己的美麗轉變！",
+            "今天開始，用善待自己的心呵護肌膚，您值得擁有最好的狀態！",
+            "美麗不僅是外表的光彩，更是內心的從容。願您的皮膚與心靈一同綻放！",
+            "每一次護膚都是與自己的對話，願您在這個過程中發現更美好的自己！",
+            "皮膚會記得您的每一份用心，願您的努力換來日益增進的美麗與健康！",
+            "如同花朵需要陽光雨露，您的皮膚也需要細心呵護。願您享受這個過程！",
+            "美麗的皮膚源自健康的生活，願您找到最適合自己的節奏與平衡！",
+            "從今天起，用微笑和耐心對待您的皮膚，它會回報您最自然的光彩！"
+        ];
+
+        // 應用狀態
+        let currentQuestionIndex = 0;
+        let userAnswers = {}; // 基本問題的答案
+        let advancedAnswers = {}; // 進階問題的答案
+        let showAdvanced = false; // 是否顯示進階問題
+        let skinType = "";
+
+        // DOM元素
+        const questionContainer = document.getElementById('questionContainer');
+        const advancedQuestionsContainer = document.getElementById('advancedQuestions');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleAdvancedBtn = document.getElementById('toggleAdvanced');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const skinTypeResult = document.getElementById('skinTypeResult');
+        const skincareAdviceContainer = document.getElementById('skincareAdvice');
+        const dietAdviceContainer = document.getElementById('dietAdvice');
+        const personalityResult = document.getElementById('personalityResult');
+        const blessingText = document.getElementById('blessingText');
+        const newBlessingBtn = document.getElementById('newBlessingBtn');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // 計算總問題數
+        const totalQuestions = basicQuestions.length;
+        const totalAdvancedQuestions = advancedQuestions.length;
+
+        // 函數：動態顯示問題
+        function displayQuestion(index) {
+            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            if (index < 0 || index >= allQuestions.length) return;
+
+            const questionData = allQuestions[index];
+            const currentAnswers = index < basicQuestions.length ? userAnswers : advancedAnswers;
+            const container = index < basicQuestions.length ? questionContainer : advancedQuestionsContainer;
+
+            // 清空舊問題並創建新問題元素
+            container.innerHTML = `
+                <div class="question-container active" data-index="${index}">
+                    <div class="question">${questionData.id}. ${questionData.question}</div>
+                    <div class="options" id="options-${index}">
+                    </div>
+                </div>
+            `;
+            
+            const optionsDiv = document.getElementById(`options-${index}`);
+            questionData.options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = `option ${currentAnswers[questionData.id] === option.value ? 'selected' : ''}`;
+                optionDiv.textContent = option.text;
+                optionDiv.dataset.value = option.value;
+                optionDiv.dataset.id = questionData.id;
+                optionDiv.addEventListener('click', handleOptionClick);
+                optionsDiv.appendChild(optionDiv);
+            });
+
+            updateNavigationButtons();
+            updateProgress();
+            
+            // 確保只有當前問題的容器顯示
+            if (index < basicQuestions.length) {
+                questionContainer.style.display = 'block';
+                advancedQuestionsContainer.style.display = 'none';
+            } else {
+                questionContainer.style.display = 'none';
+                advancedQuestionsContainer.style.display = 'block';
+            }
+        }
+
+        // 函數：處理選項點擊
+        function handleOptionClick(event) {
+            const optionDiv = event.currentTarget;
+            const questionId = parseInt(optionDiv.dataset.id);
+            const selectedValue = optionDiv.dataset.value;
+            const isAdvanced = questionId > basicQuestions.length;
+            const containerId = isAdvanced ? '#advancedQuestions .options' : `#options-${currentQuestionIndex}`;
+            
+            // 清除同一問題的其他選項的選中狀態
+            document.querySelectorAll(`${containerId} .option`).forEach(opt => {
+                if (parseInt(opt.dataset.id) === questionId) {
+                    opt.classList.remove('selected');
+                }
+            });
+
+            // 設置當前選項為選中狀態
+            optionDiv.classList.add('selected');
+
+            // 儲存答案
+            if (isAdvanced) {
+                advancedAnswers[questionId] = selectedValue;
+            } else {
+                userAnswers[questionId] = selectedValue;
+            }
+
+            // 選完自動跳轉下一題
+            setTimeout(() => {
+                if (currentQuestionIndex < basicQuestions.length - 1 || (showAdvanced && currentQuestionIndex < totalQuestions + totalAdvancedQuestions - 1)) {
+                    currentQuestionIndex++;
+                    displayQuestion(currentQuestionIndex);
+                } else if (currentQuestionIndex === totalQuestions - 1 && !showAdvanced) {
+                    // 基礎問題最後一題
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'flex';
+                } else if (showAdvanced && currentQuestionIndex === totalQuestions + totalAdvancedQuestions - 1) {
+                    // 進階問題最後一題
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'flex';
+                }
+            }, 300);
+
+            updateNavigationButtons();
+            updateProgress();
+        }
+
+        // 函數：更新進度條和導航按鈕狀態
+        function updateProgress() {
+            const total = showAdvanced ? totalQuestions + totalAdvancedQuestions : totalQuestions;
+            const completedCount = Object.keys(userAnswers).length + (showAdvanced ? Object.keys(advancedAnswers).length : 0);
+            const progress = (completedCount / total) * 100;
+
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `${completedCount}/${total}`;
+
+            // 導航按鈕邏輯
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            const isLastBasic = currentQuestionIndex === totalQuestions - 1;
+            const isLastAdvanced = showAdvanced && currentQuestionIndex === totalQuestions + totalAdvancedQuestions - 1;
+
+            if (isLastBasic && !showAdvanced) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else if (isLastAdvanced) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+
+            // 檢查當前問題是否已回答
+            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            const questionId = allQuestions[currentQuestionIndex] ? allQuestions[currentQuestionIndex].id : null;
+            let isAnswered = false;
+            if (questionId <= basicQuestions.length) {
+                isAnswered = !!userAnswers[questionId];
+            } else {
+                isAnswered = !!advancedAnswers[questionId];
+            }
+            
+            if (nextBtn.style.display !== 'none') {
+                nextBtn.disabled = !isAnswered;
+            } else if (submitBtn.style.display !== 'none') {
+                submitBtn.disabled = !isAnswered;
+            }
+            
+            // 更新進階切換按鈕文字
+            toggleAdvancedBtn.querySelector('span').textContent = showAdvanced ? '隱藏進階檢測' : '進階檢測（皮膚狀態分析）';
+            toggleAdvancedBtn.querySelector('i').className = showAdvanced ? 'fas fa-minus-circle' : 'fas fa-plus-circle';
+            advancedQuestionsContainer.classList.toggle('active', showAdvanced);
+        }
+
+        // 函數：更新導航按鈕顯示/隱藏
+        function updateNavigationButtons() {
+            const total = showAdvanced ? totalQuestions + totalAdvancedQuestions : totalQuestions;
+
+            prevBtn.style.display = 'flex';
+            prevBtn.disabled = currentQuestionIndex === 0;
+
+            if (currentQuestionIndex >= total - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        // 函數：計算肌膚類型
+        function calculateSkinType() {
+            const counts = { dry: 0, oily: 0, combination: 0, normal: 0, sensitive: 0 };
+
+            Object.values(userAnswers).forEach(value => {
+                if (counts[value] !== undefined) {
+                    counts[value]++;
+                }
+            });
+
+            // 敏感肌判斷：如果敏感肌答案 >= 2，則直接定為敏感肌。
+            if (counts.sensitive >= 2) {
+                return "sensitive";
+            }
+
+            // 找出出現次數最多的類型
+            let maxCount = 0;
+            let finalType = "normal";
+
+            for (const type in counts) {
+                if (type !== 'sensitive' && counts[type] > maxCount) {
+                    maxCount = counts[type];
+                    finalType = type;
+                }
+            }
+
+            // 如果有平手的情況，可以設定優先級，但這裡先簡單處理為最後一個平手的類型。
+            
+            // 敏感肌額外判斷：如果最終類型不是敏感肌，但敏感肌有一個答案，則調整為複合型敏感肌，例如 "Dry-Sensitive"
+            if (counts.sensitive === 1 && finalType !== "sensitive" && finalType !== "normal") {
+                return `${finalType}-sensitive`;
+            }
+            if (finalType === "normal" && maxCount === 0) {
+                 // 如果所有基本問題都沒有強烈傾向 (例如每個都選1次)，則認定為中性
+                 return "normal";
+            }
+
+            return finalType;
+        }
+
+        // 函數：生成結果報告
+        function generateReport(finalSkinType) {
+            // 1. 處理基礎皮膚類型 (處理如 "dry-sensitive" 的情況)
+            const baseType = finalSkinType.includes('-') ? finalSkinType.split('-')[0] : finalSkinType;
+            const isSensitive = finalSkinType.includes('sensitive') || finalSkinType === 'sensitive';
+            const resultData = skinTypeResults[baseType] || skinTypeResults.normal;
+
+            let resultName = resultData.name;
+            let resultIcon = resultData.icon;
+            let resultDesc = resultData.description;
+            let resultPersonality = resultData.personality;
+
+            if (isSensitive && baseType !== 'sensitive') {
+                resultName = `${resultData.name} (敏感傾向)`;
+                resultIcon = `${resultData.icon} fas fa-allergies`;
+                resultDesc += " **特別注意：您的皮膚帶有敏感傾向，在護膚時請選擇成分溫和、具有舒緩效果的產品，並避免頻繁更換！**";
+            }
+
+            skinTypeResult.innerHTML = `
+                <div class="skin-icon"><i class="${resultIcon}"></i></div>
+                <div class="skin-info">
+                    <h3>${resultName}</h3>
+                    <p>${resultDesc}</p>
+                </div>
+            `;
+
+            // 2. 顯示護膚建議
+            skincareAdviceContainer.innerHTML = generateAdviceGrid(skincareAdvice[baseType]);
+
+            // 3. 顯示飲食建議
+            dietAdviceContainer.innerHTML = generateAdviceGrid(dietAdvice[baseType]);
+
+            // 4. 顯示人格分析
+            personalityResult.innerHTML = `
+                <h3 class="section-title">您的膚質人格分析</h3>
+                <p style="font-size: 1.1rem; color: var(--dark);">${resultPersonality}</p>
+            `;
+
+            // 5. 顯示結果容器
+            const quizCard = document.querySelector('.card');
+            quizCard.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            
+            // 滾動到結果
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 函數：生成建議網格
+        function generateAdviceGrid(adviceArray) {
+            let html = '';
+            adviceArray.forEach(advice => {
+                html += `
+                    <div class="advice-card">
+                        <h4><i class="${advice.icon}"></i> ${advice.title}</h4>
+                        <p>${advice.content}</p>
+                    </div>
+                `;
+            });
+            return html;
+        }
+
+        // 函數：生成隨機祝福語
+        function generateBlessing() {
+            const randomIndex = Math.floor(Math.random() * blessings.length);
+            blessingText.textContent = blessings[randomIndex];
+        }
+
+        // --- 事件監聽器 ---
+
+        // 上一題按鈕
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+                updateProgress();
+            }
+        });
+
+        // 下一題按鈕
+        nextBtn.addEventListener('click', () => {
+            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            const questionId = allQuestions[currentQuestionIndex].id;
+            const isAnswered = questionId <= basicQuestions.length ? !!userAnswers[questionId] : !!advancedAnswers[questionId];
+
+            if (isAnswered && currentQuestionIndex < allQuestions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+                updateProgress();
+            } else if (!isAnswered) {
+                alert("請先選擇本題答案！");
+            }
+        });
+
+        // 提交按鈕
+        submitBtn.addEventListener('click', () => {
+            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            const questionId = allQuestions[currentQuestionIndex].id;
+            const isAnswered = questionId <= basicQuestions.length ? !!userAnswers[questionId] : !!advancedAnswers[questionId];
+
+            if (isAnswered) {
+                const finalSkinType = calculateSkinType();
+                generateReport(finalSkinType);
+            } else {
+                alert("請先選擇本題答案才能查看結果！");
+            }
+        });
+
+        // 進階檢測切換按鈕
+        toggleAdvancedBtn.addEventListener('click', () => {
+            showAdvanced = !showAdvanced;
+            
+            // 重置到第一頁
+            currentQuestionIndex = 0;
+            
+            // 如果切換到進階，則將進階問題也顯示出來
+            if (showAdvanced) {
+                // 如果是第一次開啟進階，需要渲染進階問題
+                if (advancedQuestionsContainer.innerHTML === '') {
+                    displayQuestion(currentQuestionIndex); // 重新渲染第一頁
+                    // 這裡的邏輯有點複雜，最好的方法是重新渲染整個問題區塊
+                }
+                currentQuestionIndex = 0;
+                displayQuestion(currentQuestionIndex);
+
+            } else {
+                // 如果切換回基礎，且當前問題索引超出基礎問題範圍，則重置為最後一題基礎問題
+                if (currentQuestionIndex >= basicQuestions.length) {
+                    currentQuestionIndex = basicQuestions.length - 1;
+                }
+                displayQuestion(currentQuestionIndex);
+            }
+
+            // 更新按鈕和進度條狀態
+            updateNavigationButtons();
+            updateProgress();
+        });
+
+        // 獲取新的祝福按鈕
+        newBlessingBtn.addEventListener('click', generateBlessing);
+
+        // 重新檢測按鈕
+        restartBtn.addEventListener('click', () => {
+            // 重置狀態
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            advancedAnswers = {};
+            showAdvanced = false;
+
+            // 顯示問卷卡片，隱藏結果
+            const quizCard = document.querySelector('.card');
+            quizCard.style.display = 'block';
+            resultsContainer.style.display = 'none';
+
+            // 重新初始化
+            displayQuestion(currentQuestionIndex);
+            generateBlessing();
+            
+            // 滾動到頂部
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 初始化時生成所有問題（並只顯示第一個）
+        function initializeQuestions() {
+            // 只需要渲染第一個問題，後續由 displayQuestion 處理
+            displayQuestion(0);
+        }
+
+        // 初始化
+        initializeQuestions();
+        generateBlessing();
+    </script>
 </body>
 </html>
