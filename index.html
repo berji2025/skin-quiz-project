@@ -958,4 +958,503 @@
                 {
                     title: "飲水",
                     icon: "fas fa-glass-whiskey",
-                    content: "每天
+                    content: "每天喝足2000ml水，可喝綠茶幫助調節皮脂分泌。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "鋅、維生素B群、益生菌有助調節皮脂分泌和腸道健康。"
+                }
+            ],
+            combination: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "富含維生素C的食物（奇異果、甜椒）、富含抗氧化物的食物（莓果、綠茶）、Omega-3脂肪酸。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "過油過鹹食物、精製糖、加工食品，這些可能加劇T字區出油。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，保持身體水分平衡。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "維生素B群、鋅、Omega-3脂肪酸有助調節皮膚狀態。"
+                }
+            ],
+            normal: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "各種顏色的蔬果、優質蛋白質（魚、豆類）、全穀類、健康脂肪（堅果、橄欖油）。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "過量加工食品、含糖飲料、酒精，這些可能破壞皮膚健康平衡。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，維持身體和皮膚的良好狀態。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "綜合維生素、抗氧化劑（維生素C、E）有助維持皮膚健康。"
+                }
+            ],
+            sensitive: [
+                {
+                    title: "宜多食",
+                    icon: "fas fa-check-circle",
+                    content: "富含抗氧化物的食物（莓果、綠葉蔬菜）、富含Omega-3的食物（鮭魚、核桃）、薑黃、益生菌食物（優格、泡菜）。"
+                },
+                {
+                    title: "宜少食",
+                    icon: "fas fa-times-circle",
+                    content: "可能引起過敏的食物（如蝦、蟹、芒果等，視個人情況而定）、辛辣食物、酒精、加工食品。"
+                },
+                {
+                    title: "飲水",
+                    icon: "fas fa-glass-whiskey",
+                    content: "每天喝足2000ml水，可喝洋甘菊茶幫助舒緩。"
+                },
+                {
+                    title: "營養補充",
+                    icon: "fas fa-capsules",
+                    content: "益生菌、Omega-3脂肪酸、槲皮素（quercetin）有助減輕過敏反應。"
+                }
+            ]
+        };
+
+        // 祝福語
+        const blessings = [
+            "願您的皮膚如春日花朵般綻放光彩，每一天都充滿自信與美麗！",
+            "皮膚是健康的鏡子，願您內外兼修，展現最自然動人的光彩！",
+            "護膚是一場溫柔的馬拉松，願您享受每一個步驟，見證自己的美麗轉變！",
+            "今天開始，用善待自己的心呵護肌膚，您值得擁有最好的狀態！",
+            "美麗不僅是外表的光彩，更是內心的從容。願您的皮膚與心靈一同綻放！",
+            "每一次護膚都是與自己的對話，願您在這個過程中發現更美好的自己！",
+            "皮膚會記得您的每一份用心，願您的努力換來日益增進的美麗與健康！",
+            "如同花朵需要陽光雨露，您的皮膚也需要細心呵護。願您享受這個過程！",
+            "美麗的皮膚源自健康的生活，願您找到最適合自己的節奏與平衡！",
+            "從今天起，用微笑和耐心對待您的皮膚，它會回報您最自然的光彩！"
+        ];
+
+        // 應用狀態
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let advancedAnswers = {};
+        let showAdvanced = false;
+        let skinType = "";
+        let userResults = {};
+
+        // DOM元素
+        const questionContainer = document.getElementById('questionContainer');
+        const advancedQuestionsContainer = document.getElementById('advancedQuestions');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleAdvancedBtn = document.getElementById('toggleAdvanced');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const skinTypeResult = document.getElementById('skinTypeResult');
+        const skincareAdviceContainer = document.getElementById('skincareAdvice');
+        const dietAdviceContainer = document.getElementById('dietAdvice');
+        const personalityResult = document.getElementById('personalityResult');
+        const blessingText = document.getElementById('blessingText');
+        const newBlessingBtn = document.getElementById('newBlessingBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const downloadButton = document.getElementById('downloadButton');
+        const resultsDownloadSection = document.getElementById('results-download');
+        const linePromotionSection = document.getElementById('line-promotion');
+
+        // 初始化
+        function init() {
+            displayQuestion(currentQuestionIndex);
+            updateProgress();
+            generateBlessing();
+            
+            // 事件監聽
+            prevBtn.addEventListener('click', goToPreviousQuestion);
+            nextBtn.addEventListener('click', goToNextQuestion);
+            submitBtn.addEventListener('click', submitTest);
+            toggleAdvancedBtn.addEventListener('click', toggleAdvancedQuestions);
+            newBlessingBtn.addEventListener('click', generateBlessing);
+            restartBtn.addEventListener('click', restartTest);
+            downloadButton.addEventListener('click', downloadResults);
+        }
+
+        // 顯示問題
+        function displayQuestion(index) {
+            const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            
+            if (index < 0 || index >= questions.length) return;
+            
+            questionContainer.innerHTML = '';
+            
+            const questionData = questions[index];
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-container active';
+            
+            const questionTitle = document.createElement('div');
+            questionTitle.className = 'question';
+            questionTitle.textContent = `${questionData.id}. ${questionData.question}`;
+            
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+            
+            questionData.options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if (userAnswers[questionData.id] === option.value || 
+                    advancedAnswers[questionData.id] === option.value) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                optionDiv.textContent = option.text;
+                optionDiv.dataset.value = option.value;
+                
+                optionDiv.addEventListener('click', () => {
+                    // 移除所有選項的選中狀態
+                    optionsDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 選中當前選項
+                    optionDiv.classList.add('selected');
+                    
+                    // 保存答案
+                    if (questionData.id <= 6) {
+                        userAnswers[questionData.id] = option.value;
+                    } else {
+                        advancedAnswers[questionData.id] = option.value;
+                    }
+                    
+                    // 啟用下一題按鈕
+                    nextBtn.disabled = false;
+                });
+                
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            questionDiv.appendChild(questionTitle);
+            questionDiv.appendChild(optionsDiv);
+            questionContainer.appendChild(questionDiv);
+            
+            // 更新按鈕狀態
+            updateButtonStates();
+        }
+
+        // 更新進度條
+        function updateProgress() {
+            const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            const answeredCount = Object.keys(userAnswers).length + Object.keys(advancedAnswers).length;
+            const progress = (answeredCount / questions.length) * 100;
+            
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `${answeredCount}/${questions.length}`;
+        }
+
+        // 更新按鈕狀態
+        function updateButtonStates() {
+            const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            const answeredCount = Object.keys(userAnswers).length + Object.keys(advancedAnswers).length;
+            
+            // 上一題按鈕
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            // 下一題/提交按鈕
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+                submitBtn.disabled = answeredCount < questions.length;
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+                
+                // 檢查當前問題是否已回答
+                const currentQuestionId = questions[currentQuestionIndex].id;
+                const isAnswered = currentQuestionId <= 6 ? 
+                    userAnswers[currentQuestionId] : 
+                    advancedAnswers[currentQuestionId];
+                
+                nextBtn.disabled = !isAnswered;
+            }
+        }
+
+        // 下一題
+        function goToNextQuestion() {
+            const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+                updateProgress();
+            }
+        }
+
+        // 上一題
+        function goToPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
+                updateProgress();
+            }
+        }
+
+        // 切換進階問題
+        function toggleAdvancedQuestions() {
+            showAdvanced = !showAdvanced;
+            
+            if (showAdvanced) {
+                toggleAdvancedBtn.innerHTML = '<i class="fas fa-minus-circle"></i><span>隱藏進階檢測</span>';
+                advancedQuestionsContainer.classList.add('active');
+                
+                // 顯示第一個進階問題
+                if (Object.keys(userAnswers).length === basicQuestions.length) {
+                    currentQuestionIndex = basicQuestions.length;
+                    displayQuestion(currentQuestionIndex);
+                }
+            } else {
+                toggleAdvancedBtn.innerHTML = '<i class="fas fa-plus-circle"></i><span>進階檢測（皮膚狀態分析）</span>';
+                advancedQuestionsContainer.classList.remove('active');
+                
+                // 回到最後一個基礎問題
+                currentQuestionIndex = Math.min(currentQuestionIndex, basicQuestions.length - 1);
+                displayQuestion(currentQuestionIndex);
+            }
+            
+            updateProgress();
+            updateButtonStates();
+        }
+
+        // 提交測驗
+        function submitTest() {
+            // 計算皮膚類型
+            skinType = calculateSkinType();
+            
+            // 顯示結果
+            showResults();
+            
+            // 顯示下載和Line推廣區域
+            resultsDownloadSection.style.display = 'block';
+            linePromotionSection.style.display = 'block';
+        }
+
+        // 計算皮膚類型
+        function calculateSkinType() {
+            // 簡單的計分系統
+            const scores = {
+                dry: 0,
+                oily: 0,
+                combination: 0,
+                normal: 0,
+                sensitive: 0
+            };
+            
+            // 計算基礎問題得分
+            Object.values(userAnswers).forEach(answer => {
+                if (scores[answer] !== undefined) {
+                    scores[answer]++;
+                }
+            });
+            
+            // 找出最高分的皮膚類型
+            let maxScore = 0;
+            let detectedSkinType = 'normal'; // 默認值
+            
+            for (const [type, score] of Object.entries(scores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    detectedSkinType = type;
+                }
+            }
+            
+            // 保存用戶結果
+            userResults = {
+                skinType: detectedSkinType,
+                skinTypeName: skinTypeResults[detectedSkinType].name,
+                answers: {...userAnswers, ...advancedAnswers},
+                timestamp: new Date().toLocaleString('zh-TW'),
+                advice: skincareAdvice[detectedSkinType],
+                diet: dietAdvice[detectedSkinType]
+            };
+            
+            return detectedSkinType;
+        }
+
+        // 顯示結果
+        function showResults() {
+            const result = skinTypeResults[skinType];
+            
+            // 顯示皮膚類型
+            skinTypeResult.innerHTML = `
+                <div class="skin-icon">
+                    <i class="${result.icon}"></i>
+                </div>
+                <div class="skin-info">
+                    <h3>${result.name}</h3>
+                    <p>${result.description}</p>
+                </div>
+            `;
+            
+            // 顯示護膚建議
+            skincareAdviceContainer.innerHTML = '';
+            skincareAdvice[skinType].forEach(advice => {
+                const adviceCard = document.createElement('div');
+                adviceCard.className = 'advice-card';
+                adviceCard.innerHTML = `
+                    <h4><i class="${advice.icon}"></i> ${advice.title}</h4>
+                    <p>${advice.content}</p>
+                `;
+                skincareAdviceContainer.appendChild(adviceCard);
+            });
+            
+            // 顯示飲食建議
+            dietAdviceContainer.innerHTML = '';
+            dietAdvice[skinType].forEach(advice => {
+                const adviceCard = document.createElement('div');
+                adviceCard.className = 'advice-card';
+                adviceCard.innerHTML = `
+                    <h4><i class="${advice.icon}"></i> ${advice.title}</h4>
+                    <p>${advice.content}</p>
+                `;
+                dietAdviceContainer.appendChild(adviceCard);
+            });
+            
+            // 顯示人格分析
+            personalityResult.innerHTML = `
+                <h3><i class="fas fa-user-circle"></i> 膚質人格分析</h3>
+                <p>${result.personality}</p>
+                <p style="margin-top: 15px; font-style: italic; color: #666;">這項分析結合了皮膚特性與常見的人格特質關聯，僅供趣味參考。</p>
+            `;
+            
+            // 顯示結果區域
+            document.querySelector('.card').style.display = 'none';
+            resultsContainer.style.display = 'block';
+        }
+
+        // 生成祝福語
+        function generateBlessing() {
+            const randomIndex = Math.floor(Math.random() * blessings.length);
+            blessingText.textContent = blessings[randomIndex];
+        }
+
+        // 下載結果
+        function downloadResults() {
+            // 創建PDF內容
+            const result = skinTypeResults[skinType];
+            const now = new Date();
+            const timestamp = now.toLocaleString('zh-TW');
+            
+            // 創建PDF內容
+            const pdfContent = `
+                ============================================
+                Berji肌膚您的管理小助手 - 檢測報告
+                生成時間: ${timestamp}
+                ============================================
+                
+                您的皮膚類型: ${result.name}
+                
+                皮膚描述:
+                ${result.description}
+                
+                ============================================
+                護膚建議:
+                ============================================
+                ${skincareAdvice[skinType].map(advice => `
+                ${advice.title}:
+                ${advice.content}
+                `).join('\n')}
+                
+                ============================================
+                飲食建議:
+                ============================================
+                ${dietAdvice[skinType].map(advice => `
+                ${advice.title}:
+                ${advice.content}
+                `).join('\n')}
+                
+                ============================================
+                膚質人格分析:
+                ============================================
+                ${result.personality}
+                
+                ============================================
+                您的回答記錄:
+                ============================================
+                ${Object.entries(userResults.answers).map(([id, answer]) => {
+                    const allQuestions = [...basicQuestions, ...advancedQuestions];
+                    const question = allQuestions.find(q => q.id == id);
+                    const option = question ? question.options.find(opt => opt.value === answer) : null;
+                    return `問題 ${id}: ${question ? question.question : '未知問題'}
+                    您的答案: ${option ? option.text : answer}`;
+                }).join('\n\n')}
+                
+                ============================================
+                注意事項:
+                ============================================
+                本檢測結果僅供參考，如有皮膚問題請諮詢專業醫師。
+                
+                Berji肌膚您的管理小助手祝您皮膚健康美麗！
+            `;
+            
+            // 創建Blob並下載
+            const blob = new Blob([pdfContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Berji肌膚檢測報告_${userResults.skinTypeName}_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // 顯示下載成功提示
+            const originalText = downloadButton.innerHTML;
+            downloadButton.innerHTML = '<i class="fas fa-check"></i> 下載成功！';
+            downloadButton.style.backgroundColor = '#2E7D32';
+            
+            setTimeout(() => {
+                downloadButton.innerHTML = originalText;
+                downloadButton.style.backgroundColor = '';
+            }, 2000);
+        }
+
+        // 重新開始測驗
+        function restartTest() {
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            advancedAnswers = {};
+            showAdvanced = false;
+            skinType = "";
+            userResults = {};
+            
+            // 重置UI
+            document.querySelector('.card').style.display = 'block';
+            resultsContainer.style.display = 'none';
+            resultsDownloadSection.style.display = 'none';
+            linePromotionSection.style.display = 'none';
+            toggleAdvancedBtn.innerHTML = '<i class="fas fa-plus-circle"></i><span>進階檢測（皮膚狀態分析）</span>';
+            advancedQuestionsContainer.classList.remove('active');
+            
+            // 重新初始化
+            displayQuestion(currentQuestionIndex);
+            updateProgress();
+            generateBlessing();
+        }
+
+        // 頁面加載完成後初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
