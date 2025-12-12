@@ -21,13 +21,14 @@
             --light: #fff5f7;
             --text: #333333;
             --shadow: rgba(0, 0, 0, 0.08);
+            --success: #4CAF50;
+            --line-green: #06C755;
         }
         
         body {
             background-color: var(--light);
             color: var(--text);
             line-height: 1.6;
-            min-height: 100vh;
         }
         
         .container {
@@ -108,8 +109,8 @@
         }
         
         .card:hover {
-            /* transform: translateY(-5px); */
-            /* box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); */
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
         
         .question-container {
@@ -294,6 +295,120 @@
             min-height: 40px;
         }
         
+        /* 結果下載區域 */
+        #results-download {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            border: 2px dashed var(--accent);
+            display: none; /* 初始隱藏 */
+        }
+        
+        #results-download h3 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        #results-download p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 25px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .download-button {
+            display: inline-block;
+            padding: 18px 35px;
+            background-color: var(--success);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .download-button:hover {
+            background-color: #3d8b40;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        /* Line推廣區域 */
+        #line-promotion {
+            background: linear-gradient(135deg, #e6f7ed 0%, #d4f1df 100%);
+            border-radius: 15px;
+            padding: 35px;
+            margin-top: 40px;
+            border-left: 8px solid var(--line-green);
+            display: none; /* 初始隱藏 */
+        }
+        
+        #line-promotion .line-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        #line-promotion h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        #line-promotion p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 25px;
+            line-height: 1.7;
+        }
+        
+        .line-id {
+            background-color: #fff;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+            color: var(--line-green);
+            border: 2px solid var(--line-green);
+            font-size: 1.2rem;
+        }
+        
+        .line-button {
+            display: inline-block;
+            padding: 18px 35px;
+            background-color: var(--line-green);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(6, 199, 85, 0.3);
+            margin-top: 15px;
+        }
+        
+        .line-button:hover {
+            background-color: #05a944;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(6, 199, 85, 0.4);
+        }
+        
         .progress-container {
             margin-bottom: 30px;
         }
@@ -401,6 +516,15 @@
                 margin-right: 0;
                 margin-bottom: 20px;
             }
+            
+            #line-promotion h2 {
+                font-size: 1.5rem;
+            }
+            
+            .line-button, .download-button {
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -428,7 +552,8 @@
             </div>
             
             <div id="questionContainer">
-                </div>
+                <!-- 問題將由JavaScript動態生成 -->
+            </div>
             
             <div class="toggle-advanced">
                 <button class="toggle-btn" id="toggleAdvanced">
@@ -438,7 +563,8 @@
             </div>
             
             <div class="advanced-questions" id="advancedQuestions">
-                </div>
+                <!-- 進階問題將由JavaScript動態生成 -->
+            </div>
             
             <div class="nav-buttons">
                 <button class="btn btn-outline" id="prevBtn">
@@ -461,22 +587,36 @@
                 <h2 class="section-title">您的肌膚檢測結果</h2>
                 
                 <div class="skin-type" id="skinTypeResult">
-                    </div>
+                    <!-- 皮膚類型結果將由JavaScript動態生成 -->
+                </div>
                 
                 <div class="advice-section">
                     <h3 class="section-title">護膚建議</h3>
                     <div class="advice-grid" id="skincareAdvice">
-                        </div>
+                        <!-- 護膚建議將由JavaScript動態生成 -->
+                    </div>
                 </div>
                 
                 <div class="advice-section">
                     <h3 class="section-title">飲食建議</h3>
                     <div class="advice-grid" id="dietAdvice">
-                        </div>
+                        <!-- 飲食建議將由JavaScript動態生成 -->
+                    </div>
                 </div>
                 
                 <div class="personality-section" id="personalityResult">
-                    </div>
+                    <!-- 人格分析將由JavaScript動態生成 -->
+                </div>
+                
+                <!-- 結果下載區域 (完成測驗後才會顯示) -->
+                <section id="results-download">
+                    <h3><i class="fas fa-download"></i> 您的專屬結果已生成</h3>
+                    <p>點擊下方按鈕，即可將您的分析結果或專屬報告下載到您的裝置中留存。</p>
+                    
+                    <button class="download-button" id="downloadButton">
+                        <i class="fas fa-file-pdf"></i> 下載測驗結果 (PDF)
+                    </button>
+                </section>
                 
                 <div class="blessing">
                     <h3><i class="fas fa-heart"></i> Berji的祝福</h3>
@@ -486,6 +626,22 @@
                         獲取新的祝福
                     </button>
                 </div>
+                
+                <!-- Line推廣區域 (完成測驗後才會顯示) - 已刪除QR Code -->
+                <aside id="line-promotion">
+                    <div class="line-content">
+                        <h2><i class="fab fa-line"></i> 加入 Line 好友，領你的專屬優惠好禮！</h2>
+                        <p>立即點擊下方按鈕加入好友，並在 Line 輸入 ：<mark class="line-id">hyjfjc88</mark> 領取您的專屬好禮！</p>
+
+                        <a href="https://lin.ee/osrHn6D" target="_blank" class="line-button">
+                            <i class="fab fa-line"></i> 加入line好友輸入hyjfjc88領取你的專屬優惠好禮
+                        </a>
+                        
+                        <p style="margin-top: 20px; font-size: 0.95rem; color: #666;">
+                            <i class="fas fa-info-circle"></i> 加入後請記得輸入優惠碼: <strong>hyjfjc88</strong>
+                        </p>
+                    </div>
+                </aside>
                 
                 <div style="text-align: center; margin-top: 30px;">
                     <button class="btn btn-outline" id="restartBtn">
@@ -802,518 +958,4 @@
                 {
                     title: "飲水",
                     icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，可喝綠茶幫助調節皮脂分泌。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "鋅、維生素B群、益生菌有助調節皮脂分泌和腸道健康。"
-                }
-            ],
-            combination: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "富含維生素C的食物（奇異果、甜椒）、富含抗氧化物的食物（莓果、綠茶）、Omega-3脂肪酸。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "過油過鹹食物、精製糖、加工食品，這些可能加劇T字區出油。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，保持身體水分平衡。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "維生素B群、鋅、Omega-3脂肪酸有助調節皮膚狀態。"
-                }
-            ],
-            normal: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "各種顏色的蔬果、優質蛋白質（魚、豆類）、全穀類、健康脂肪（堅果、橄欖油）。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "過量加工食品、含糖飲料、酒精，這些可能破壞皮膚健康平衡。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，維持身體和皮膚的良好狀態。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "綜合維生素、抗氧化劑（維生素C、E）有助維持皮膚健康。"
-                }
-            ],
-            sensitive: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "富含抗氧化物的食物（莓果、綠葉蔬菜）、富含Omega-3的食物（鮭魚、核桃）、薑黃、益生菌食物（優格、泡菜）。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "可能引起過敏的食物（如蝦、蟹、芒果等，視個人情況而定）、辛辣食物、酒精、加工食品。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，可喝洋甘菊茶幫助舒緩。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "益生菌、Omega-3脂肪酸、槲皮素（quercetin）有助減輕過敏反應。"
-                }
-            ]
-        };
-
-        // 祝福語
-        const blessings = [
-            "願您的皮膚如春日花朵般綻放光彩，每一天都充滿自信與美麗！",
-            "皮膚是健康的鏡子，願您內外兼修，展現最自然動人的光彩！",
-            "護膚是一場溫柔的馬拉松，願您享受每一個步驟，見證自己的美麗轉變！",
-            "今天開始，用善待自己的心呵護肌膚，您值得擁有最好的狀態！",
-            "美麗不僅是外表的光彩，更是內心的從容。願您的皮膚與心靈一同綻放！",
-            "每一次護膚都是與自己的對話，願您在這個過程中發現更美好的自己！",
-            "皮膚會記得您的每一份用心，願您的努力換來日益增進的美麗與健康！",
-            "如同花朵需要陽光雨露，您的皮膚也需要細心呵護。願您享受這個過程！",
-            "美麗的皮膚源自健康的生活，願您找到最適合自己的節奏與平衡！",
-            "從今天起，用微笑和耐心對待您的皮膚，它會回報您最自然的光彩！"
-        ];
-
-        // 應用狀態
-        let currentQuestionIndex = 0;
-        let userAnswers = {}; // 基本問題的答案
-        let advancedAnswers = {}; // 進階問題的答案
-        let showAdvanced = false; // 是否顯示進階問題
-        let skinType = "";
-
-        // DOM元素
-        const questionContainer = document.getElementById('questionContainer');
-        const advancedQuestionsContainer = document.getElementById('advancedQuestions');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const submitBtn = document.getElementById('submitBtn');
-        const toggleAdvancedBtn = document.getElementById('toggleAdvanced');
-        const resultsContainer = document.getElementById('resultsContainer');
-        const skinTypeResult = document.getElementById('skinTypeResult');
-        const skincareAdviceContainer = document.getElementById('skincareAdvice');
-        const dietAdviceContainer = document.getElementById('dietAdvice');
-        const personalityResult = document.getElementById('personalityResult');
-        const blessingText = document.getElementById('blessingText');
-        const newBlessingBtn = document.getElementById('newBlessingBtn');
-        const restartBtn = document.getElementById('restartBtn');
-
-        // 計算總問題數
-        const totalQuestions = basicQuestions.length;
-        const totalAdvancedQuestions = advancedQuestions.length;
-
-        // 函數：動態顯示問題
-        function displayQuestion(index) {
-            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
-            if (index < 0 || index >= allQuestions.length) return;
-
-            const questionData = allQuestions[index];
-            const currentAnswers = index < basicQuestions.length ? userAnswers : advancedAnswers;
-            const container = index < basicQuestions.length ? questionContainer : advancedQuestionsContainer;
-
-            // 清空舊問題並創建新問題元素
-            container.innerHTML = `
-                <div class="question-container active" data-index="${index}">
-                    <div class="question">${questionData.id}. ${questionData.question}</div>
-                    <div class="options" id="options-${index}">
-                    </div>
-                </div>
-            `;
-            
-            const optionsDiv = document.getElementById(`options-${index}`);
-            questionData.options.forEach(option => {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = `option ${currentAnswers[questionData.id] === option.value ? 'selected' : ''}`;
-                optionDiv.textContent = option.text;
-                optionDiv.dataset.value = option.value;
-                optionDiv.dataset.id = questionData.id;
-                optionDiv.addEventListener('click', handleOptionClick);
-                optionsDiv.appendChild(optionDiv);
-            });
-
-            updateNavigationButtons();
-            updateProgress();
-            
-            // 確保只有當前問題的容器顯示
-            if (index < basicQuestions.length) {
-                questionContainer.style.display = 'block';
-                advancedQuestionsContainer.style.display = 'none';
-            } else {
-                questionContainer.style.display = 'none';
-                advancedQuestionsContainer.style.display = 'block';
-            }
-        }
-
-        // 函數：處理選項點擊
-        function handleOptionClick(event) {
-            const optionDiv = event.currentTarget;
-            const questionId = parseInt(optionDiv.dataset.id);
-            const selectedValue = optionDiv.dataset.value;
-            const isAdvanced = questionId > basicQuestions.length;
-            const containerId = isAdvanced ? '#advancedQuestions .options' : `#options-${currentQuestionIndex}`;
-            
-            // 清除同一問題的其他選項的選中狀態
-            document.querySelectorAll(`${containerId} .option`).forEach(opt => {
-                if (parseInt(opt.dataset.id) === questionId) {
-                    opt.classList.remove('selected');
-                }
-            });
-
-            // 設置當前選項為選中狀態
-            optionDiv.classList.add('selected');
-
-            // 儲存答案
-            if (isAdvanced) {
-                advancedAnswers[questionId] = selectedValue;
-            } else {
-                userAnswers[questionId] = selectedValue;
-            }
-
-            // 選完自動跳轉下一題
-            setTimeout(() => {
-                if (currentQuestionIndex < basicQuestions.length - 1 || (showAdvanced && currentQuestionIndex < totalQuestions + totalAdvancedQuestions - 1)) {
-                    currentQuestionIndex++;
-                    displayQuestion(currentQuestionIndex);
-                } else if (currentQuestionIndex === totalQuestions - 1 && !showAdvanced) {
-                    // 基礎問題最後一題
-                    nextBtn.style.display = 'none';
-                    submitBtn.style.display = 'flex';
-                } else if (showAdvanced && currentQuestionIndex === totalQuestions + totalAdvancedQuestions - 1) {
-                    // 進階問題最後一題
-                    nextBtn.style.display = 'none';
-                    submitBtn.style.display = 'flex';
-                }
-            }, 300);
-
-            updateNavigationButtons();
-            updateProgress();
-        }
-
-        // 函數：更新進度條和導航按鈕狀態
-        function updateProgress() {
-            const total = showAdvanced ? totalQuestions + totalAdvancedQuestions : totalQuestions;
-            const completedCount = Object.keys(userAnswers).length + (showAdvanced ? Object.keys(advancedAnswers).length : 0);
-            const progress = (completedCount / total) * 100;
-
-            progressFill.style.width = `${progress}%`;
-            progressText.textContent = `${completedCount}/${total}`;
-
-            // 導航按鈕邏輯
-            prevBtn.disabled = currentQuestionIndex === 0;
-            
-            const isLastBasic = currentQuestionIndex === totalQuestions - 1;
-            const isLastAdvanced = showAdvanced && currentQuestionIndex === totalQuestions + totalAdvancedQuestions - 1;
-
-            if (isLastBasic && !showAdvanced) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'flex';
-            } else if (isLastAdvanced) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'flex';
-            } else {
-                nextBtn.style.display = 'flex';
-                submitBtn.style.display = 'none';
-            }
-
-            // 檢查當前問題是否已回答
-            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
-            const questionId = allQuestions[currentQuestionIndex] ? allQuestions[currentQuestionIndex].id : null;
-            let isAnswered = false;
-            if (questionId <= basicQuestions.length) {
-                isAnswered = !!userAnswers[questionId];
-            } else {
-                isAnswered = !!advancedAnswers[questionId];
-            }
-            
-            if (nextBtn.style.display !== 'none') {
-                nextBtn.disabled = !isAnswered;
-            } else if (submitBtn.style.display !== 'none') {
-                submitBtn.disabled = !isAnswered;
-            }
-            
-            // 更新進階切換按鈕文字
-            toggleAdvancedBtn.querySelector('span').textContent = showAdvanced ? '隱藏進階檢測' : '進階檢測（皮膚狀態分析）';
-            toggleAdvancedBtn.querySelector('i').className = showAdvanced ? 'fas fa-minus-circle' : 'fas fa-plus-circle';
-            advancedQuestionsContainer.classList.toggle('active', showAdvanced);
-        }
-
-        // 函數：更新導航按鈕顯示/隱藏
-        function updateNavigationButtons() {
-            const total = showAdvanced ? totalQuestions + totalAdvancedQuestions : totalQuestions;
-
-            prevBtn.style.display = 'flex';
-            prevBtn.disabled = currentQuestionIndex === 0;
-
-            if (currentQuestionIndex >= total - 1) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'flex';
-            } else {
-                nextBtn.style.display = 'flex';
-                submitBtn.style.display = 'none';
-            }
-        }
-
-        // 函數：計算肌膚類型
-        function calculateSkinType() {
-            const counts = { dry: 0, oily: 0, combination: 0, normal: 0, sensitive: 0 };
-
-            Object.values(userAnswers).forEach(value => {
-                if (counts[value] !== undefined) {
-                    counts[value]++;
-                }
-            });
-
-            // 敏感肌判斷：如果敏感肌答案 >= 2，則直接定為敏感肌。
-            if (counts.sensitive >= 2) {
-                return "sensitive";
-            }
-
-            // 找出出現次數最多的類型
-            let maxCount = 0;
-            let finalType = "normal";
-
-            for (const type in counts) {
-                if (type !== 'sensitive' && counts[type] > maxCount) {
-                    maxCount = counts[type];
-                    finalType = type;
-                }
-            }
-
-            // 如果有平手的情況，可以設定優先級，但這裡先簡單處理為最後一個平手的類型。
-            
-            // 敏感肌額外判斷：如果最終類型不是敏感肌，但敏感肌有一個答案，則調整為複合型敏感肌，例如 "Dry-Sensitive"
-            if (counts.sensitive === 1 && finalType !== "sensitive" && finalType !== "normal") {
-                return `${finalType}-sensitive`;
-            }
-            if (finalType === "normal" && maxCount === 0) {
-                 // 如果所有基本問題都沒有強烈傾向 (例如每個都選1次)，則認定為中性
-                 return "normal";
-            }
-
-            return finalType;
-        }
-
-        // 函數：生成結果報告
-        function generateReport(finalSkinType) {
-            // 1. 處理基礎皮膚類型 (處理如 "dry-sensitive" 的情況)
-            const baseType = finalSkinType.includes('-') ? finalSkinType.split('-')[0] : finalSkinType;
-            const isSensitive = finalSkinType.includes('sensitive') || finalSkinType === 'sensitive';
-            const resultData = skinTypeResults[baseType] || skinTypeResults.normal;
-
-            let resultName = resultData.name;
-            let resultIcon = resultData.icon;
-            let resultDesc = resultData.description;
-            let resultPersonality = resultData.personality;
-
-            if (isSensitive && baseType !== 'sensitive') {
-                resultName = `${resultData.name} (敏感傾向)`;
-                resultIcon = `${resultData.icon} fas fa-allergies`;
-                resultDesc += " **特別注意：您的皮膚帶有敏感傾向，在護膚時請選擇成分溫和、具有舒緩效果的產品，並避免頻繁更換！**";
-            }
-
-            skinTypeResult.innerHTML = `
-                <div class="skin-icon"><i class="${resultIcon}"></i></div>
-                <div class="skin-info">
-                    <h3>${resultName}</h3>
-                    <p>${resultDesc}</p>
-                </div>
-            `;
-
-            // 2. 顯示護膚建議
-            skincareAdviceContainer.innerHTML = generateAdviceGrid(skincareAdvice[baseType]);
-
-            // 3. 顯示飲食建議
-            dietAdviceContainer.innerHTML = generateAdviceGrid(dietAdvice[baseType]);
-
-            // 4. 顯示人格分析
-            personalityResult.innerHTML = `
-                <h3 class="section-title">您的膚質人格分析</h3>
-                <p style="font-size: 1.1rem; color: var(--dark);">${resultPersonality}</p>
-            `;
-
-            // 5. 顯示結果容器
-            const quizCard = document.querySelector('.card');
-            quizCard.style.display = 'none';
-            resultsContainer.style.display = 'block';
-            
-            // 滾動到結果
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // 函數：生成建議網格
-        function generateAdviceGrid(adviceArray) {
-            let html = '';
-            adviceArray.forEach(advice => {
-                html += `
-                    <div class="advice-card">
-                        <h4><i class="${advice.icon}"></i> ${advice.title}</h4>
-                        <p>${advice.content}</p>
-                    </div>
-                `;
-            });
-            return html;
-        }
-
-        // 函數：生成隨機祝福語
-        function generateBlessing() {
-            const randomIndex = Math.floor(Math.random() * blessings.length);
-            blessingText.textContent = blessings[randomIndex];
-        }
-
-        // --- 事件監聽器 ---
-
-        // 上一題按鈕
-        prevBtn.addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                displayQuestion(currentQuestionIndex);
-                updateProgress();
-            }
-        });
-
-        // 下一題按鈕
-        nextBtn.addEventListener('click', () => {
-            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
-            const questionId = allQuestions[currentQuestionIndex].id;
-            const isAnswered = questionId <= basicQuestions.length ? !!userAnswers[questionId] : !!advancedAnswers[questionId];
-
-            if (isAnswered && currentQuestionIndex < allQuestions.length - 1) {
-                currentQuestionIndex++;
-                displayQuestion(currentQuestionIndex);
-                updateProgress();
-            } else if (!isAnswered) {
-                alert("請先選擇本題答案！");
-            }
-        });
-
-        // 提交按鈕
-        submitBtn.addEventListener('click', () => {
-            const allQuestions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
-            const questionId = allQuestions[currentQuestionIndex].id;
-            const isAnswered = questionId <= basicQuestions.length ? !!userAnswers[questionId] : !!advancedAnswers[questionId];
-
-            if (isAnswered) {
-                const finalSkinType = calculateSkinType();
-                generateReport(finalSkinType);
-            } else {
-                alert("請先選擇本題答案才能查看結果！");
-            }
-        });
-
-        // 進階檢測切換按鈕
-        toggleAdvancedBtn.addEventListener('click', () => {
-            showAdvanced = !showAdvanced;
-            
-            // 重置到第一頁
-            currentQuestionIndex = 0;
-            
-            // 如果切換到進階，則將進階問題也顯示出來
-            if (showAdvanced) {
-                // 如果是第一次開啟進階，需要渲染進階問題
-                if (advancedQuestionsContainer.innerHTML === '') {
-                    displayQuestion(currentQuestionIndex); // 重新渲染第一頁
-                    // 這裡的邏輯有點複雜，最好的方法是重新渲染整個問題區塊
-                }
-                currentQuestionIndex = 0;
-                displayQuestion(currentQuestionIndex);
-
-            } else {
-                // 如果切換回基礎，且當前問題索引超出基礎問題範圍，則重置為最後一題基礎問題
-                if (currentQuestionIndex >= basicQuestions.length) {
-                    currentQuestionIndex = basicQuestions.length - 1;
-                }
-                displayQuestion(currentQuestionIndex);
-            }
-
-            // 更新按鈕和進度條狀態
-            updateNavigationButtons();
-            updateProgress();
-        });
-
-        // 獲取新的祝福按鈕
-        newBlessingBtn.addEventListener('click', generateBlessing);
-
-        // 重新檢測按鈕
-        restartBtn.addEventListener('click', () => {
-            // 重置狀態
-            currentQuestionIndex = 0;
-            userAnswers = {};
-            advancedAnswers = {};
-            showAdvanced = false;
-
-            // 顯示問卷卡片，隱藏結果
-            const quizCard = document.querySelector('.card');
-            quizCard.style.display = 'block';
-            resultsContainer.style.display = 'none';
-
-            // 重新初始化
-            displayQuestion(currentQuestionIndex);
-            generateBlessing();
-            
-            // 滾動到頂部
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-
-        // 初始化時生成所有問題（並只顯示第一個）
-        function initializeQuestions() {
-            // 只需要渲染第一個問題，後續由 displayQuestion 處理
-            displayQuestion(0);
-        }
-
-        // 初始化
-        initializeQuestions();
-        generateBlessing();
-    </script>
-</body>
-</html>
-
-<section id="results-download">
-    <h3>📥 您的專屬結果已生成</h3>
-    <p>點擊下方按鈕，即可將您的分析結果或專屬報告下載到您的裝置中留存。</p>
-    
-    <a href="path/to/your/result.pdf" download="我的專屬結果.pdf" class="download-button">
-        立即下載結果 (PDF)
-    </a>
-</section>
-
-<aside id="line-promotion">
-    <div class="line-content">
-        <h2>💖 加入 Line 好友，領數你的專屬優惠好禮！</h2>
-        <p>立即掃描下方 QR Code 或點擊連結，並在 Line 輸入 ：<mark class="line-id">hyjfjc88</mark> 領取您的專屬好禮！</p>
-        
-        <div class="qr-content">
-            <img src="images/line_qr_code.png" alt="berji 官方 Line QR Code" class="line-qr-image">
-            <p class="small-text">(使用手機 Line 掃描上方 QR Code)</p>
-        </div>
-
-        <a href="https://lin.ee/osrHn6D" target="_blank" class="line-button">
-            ✨ 加入line好友輸入hyjfjc88領取你的專屬優惠好禮 ✨
-        </a>
-    </div>
-</aside>
-
+                    content: "每天
