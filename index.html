@@ -160,6 +160,8 @@
             display: flex;
             justify-content: space-between;
             margin-top: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         .btn {
@@ -176,6 +178,8 @@
             justify-content: center;
             gap: 10px;
             box-shadow: 0 4px 15px rgba(255, 123, 172, 0.3);
+            flex: 1;
+            min-width: 150px;
         }
         
         .btn:hover {
@@ -525,6 +529,14 @@
                 padding: 15px 25px;
                 font-size: 1rem;
             }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -539,7 +551,7 @@
         </header>
         
         <div class="card">
-            <h2 class="section-title">基礎肌膚檢測</h2>
+            <h2 class="section-title">肌膚檢測</h2>
             
             <div class="progress-container">
                 <div class="progress-bar">
@@ -552,8 +564,7 @@
             </div>
             
             <div id="questionContainer">
-                <!-- 問題將由JavaScript動態生成 -->
-            </div>
+                </div>
             
             <div class="toggle-advanced">
                 <button class="toggle-btn" id="toggleAdvanced">
@@ -563,8 +574,7 @@
             </div>
             
             <div class="advanced-questions" id="advancedQuestions">
-                <!-- 進階問題將由JavaScript動態生成 -->
-            </div>
+                </div>
             
             <div class="nav-buttons">
                 <button class="btn btn-outline" id="prevBtn">
@@ -587,34 +597,29 @@
                 <h2 class="section-title">您的肌膚檢測結果</h2>
                 
                 <div class="skin-type" id="skinTypeResult">
-                    <!-- 皮膚類型結果將由JavaScript動態生成 -->
-                </div>
+                    </div>
                 
                 <div class="advice-section">
                     <h3 class="section-title">護膚建議</h3>
                     <div class="advice-grid" id="skincareAdvice">
-                        <!-- 護膚建議將由JavaScript動態生成 -->
-                    </div>
+                        </div>
                 </div>
                 
                 <div class="advice-section">
                     <h3 class="section-title">飲食建議</h3>
                     <div class="advice-grid" id="dietAdvice">
-                        <!-- 飲食建議將由JavaScript動態生成 -->
-                    </div>
+                        </div>
                 </div>
                 
                 <div class="personality-section" id="personalityResult">
-                    <!-- 人格分析將由JavaScript動態生成 -->
-                </div>
+                    </div>
                 
-                <!-- 結果下載區域 (完成測驗後才會顯示) -->
                 <section id="results-download">
                     <h3><i class="fas fa-download"></i> 您的專屬結果已生成</h3>
                     <p>點擊下方下載按鈕，或直接截圖，即可將您的分析結果或專屬報告保存到您的裝置中</p>
                     
                     <button class="download-button" id="downloadButton">
-                        <i class="fas fa-file-pdf"></i> 下載測驗結果 (PDF)
+                        <i class="fas fa-file-alt"></i> 下載測驗結果 (純文字)
                     </button>
                 </section>
                 
@@ -627,7 +632,6 @@
                     </button>
                 </div>
                 
-                <!-- Line推廣區域 (完成測驗後才會顯示) - 已刪除QR Code -->
                 <aside id="line-promotion">
                     <div class="line-content">
                         <h2><i class="fab fa-line"></i> 加入 Line 好友，領你的專屬優惠好禮！</h2>
@@ -717,7 +721,7 @@
             },
             {
                 id: 6,
-                question: "您的皮膚在換季時的反應如何？(完成後按【進階檢測→隱藏進階檢測→查看結果】)",
+                question: "您的皮膚在換季時的反應如何？",
                 options: [
                     { text: "非常乾燥，甚至脫皮", value: "dry" },
                     { text: "T字區油，臉頰乾燥", value: "combination" },
@@ -809,228 +813,68 @@
         // 護膚建議
         const skincareAdvice = {
             dry: [
-                {
-                    title: "清潔",
-                    icon: "fas fa-pump-soap",
-                    content: "使用溫和、不含皂鹼的潔面產品，避免過度清潔。水溫不宜過高，以免帶走過多油脂。"
-                },
-                {
-                    title: "保濕",
-                    icon: "fas fa-tint",
-                    content: "選擇含有玻尿酸、甘油、角鯊烷等保濕成分的產品。早晚使用保濕精華和乳霜，每周敷2-3次保濕面膜。"
-                },
-                {
-                    title: "防曬",
-                    icon: "fas fa-sun",
-                    content: "每天使用SPF30以上的防曬霜，避免紫外線加速皮膚乾燥和老化。選擇滋潤型的防曬產品。"
-                },
-                {
-                    title: "特殊護理",
-                    icon: "fas fa-heart",
-                    content: "定期使用保濕精華油，晚上可使用較滋潤的晚霜。避免使用含酒精、酸類等刺激性成分的產品。"
-                }
+                {title: "清潔",icon: "fas fa-pump-soap",content: "使用溫和、不含皂鹼的潔面產品，避免過度清潔。水溫不宜過高，以免帶走過多油脂。"},
+                {title: "保濕",icon: "fas fa-tint",content: "選擇含有玻尿酸、甘油、角鯊烷等保濕成分的產品。早晚使用保濕精華和乳霜，每周敷2-3次保濕面膜。"},
+                {title: "防曬",icon: "fas fa-sun",content: "每天使用SPF30以上的防曬霜，避免紫外線加速皮膚乾燥和老化。選擇滋潤型的防曬產品。"},
+                {title: "特殊護理",icon: "fas fa-heart",content: "定期使用保濕精華油，晚上可使用較滋潤的晚霜。避免使用含酒精、酸類等刺激性成分的產品。"}
             ],
             oily: [
-                {
-                    title: "清潔",
-                    icon: "fas fa-pump-soap",
-                    content: "使用溫和控油潔面產品，每天清潔2次，避免過度清潔導致皮脂過度分泌。"
-                },
-                {
-                    title: "保濕",
-                    icon: "fas fa-tint",
-                    content: "選擇清爽的保濕產品，如水凝膠、凝露質地。油性肌也需要保濕，以維持水油平衡。"
-                },
-                {
-                    title: "控油",
-                    icon: "fas fa-wind",
-                    content: "使用含有水楊酸、果酸或煙酰胺的產品幫助控油和疏通毛孔。隨身攜帶吸油面紙，但不要過度使用。"
-                },
-                {
-                    title: "特殊護理",
-                    icon: "fas fa-heart",
-                    content: "每周使用1-2次深層清潔面膜或泥膜。避免使用過於滋潤的產品，選擇標註'無油'或'清爽'的護膚品。"
-                }
+                {title: "清潔",icon: "fas fa-pump-soap",content: "使用溫和控油潔面產品，每天清潔2次，避免過度清潔導致皮脂過度分泌。"},
+                {title: "保濕",icon: "fas fa-tint",content: "選擇清爽的保濕產品，如水凝膠、凝露質地。油性肌也需要保濕，以維持水油平衡。"},
+                {title: "控油",icon: "fas fa-wind",content: "使用含有水楊酸、果酸或煙酰胺的產品幫助控油和疏通毛孔。隨身攜帶吸油面紙，但不要過度使用。"},
+                {title: "特殊護理",icon: "fas fa-heart",content: "每周使用1-2次深層清潔面膜或泥膜。避免使用過於滋潤的產品，選擇標註'無油'或'清爽'的護膚品。"}
             ],
             combination: [
-                {
-                    title: "分區清潔",
-                    icon: "fas fa-pump-soap",
-                    content: "T字區可重點清潔，臉頰處輕輕帶過。選擇溫和的潔面產品，避免全臉使用強力控油產品。"
-                },
-                {
-                    title: "分區保濕",
-                    icon: "fas fa-tint",
-                    content: "T字區使用清爽保濕品，臉頰使用較滋潤的保濕產品。可準備兩種不同質地的保濕產品分區使用。"
-                },
-                {
-                    title: "防曬",
-                    icon: "fas fa-sun",
-                    content: "選擇清爽不黏膩的防曬產品，重點塗抹於全臉，特別是容易出油的T字區。"
-                },
-                {
-                    title: "特殊護理",
-                    icon: "fas fa-heart",
-                    content: "每周可在T字區使用深層清潔面膜，臉頰使用保濕面膜。避免使用全臉強效控油或強效滋潤的產品。"
-                }
+                {title: "分區清潔",icon: "fas fa-pump-soap",content: "T字區可重點清潔，臉頰處輕輕帶過。選擇溫和的潔面產品，避免全臉使用強力控油產品。"},
+                {title: "分區保濕",icon: "fas fa-tint",content: "T字區使用清爽保濕品，臉頰使用較滋潤的保濕產品。可準備兩種不同質地的保濕產品分區使用。"},
+                {title: "防曬",icon: "fas fa-sun",content: "選擇清爽不黏膩的防曬產品，重點塗抹於全臉，特別是容易出油的T字區。"},
+                {title: "特殊護理",icon: "fas fa-heart",content: "每周可在T字區使用深層清潔面膜，臉頰使用保濕面膜。避免使用全臉強效控油或強效滋潤的產品。"}
             ],
             normal: [
-                {
-                    title: "基礎清潔",
-                    icon: "fas fa-pump-soap",
-                    content: "使用溫和潔面產品，早晚各一次。避免過度清潔，維持皮膚自然平衡狀態。"
-                },
-                {
-                    title: "基礎保濕",
-                    icon: "fas fa-tint",
-                    content: "使用輕盈的保濕產品，維持皮膚水潤度。根據季節調整保濕產品，夏季清爽，冬季滋潤一些。"
-                },
-                {
-                    title: "防曬",
-                    icon: "fas fa-sun",
-                    content: "每天使用SPF30以上的防曬霜，預防光老化和色素沉澱。選擇質地舒適的防曬產品。"
-                },
-                {
-                    title: "維持健康",
-                    icon: "fas fa-heart",
-                    content: "保持規律作息和健康飲食，定期運動。即使膚質良好，也要避免不良習慣破壞皮膚平衡。"
-                }
+                {title: "基礎清潔",icon: "fas fa-pump-soap",content: "使用溫和潔面產品，早晚各一次。避免過度清潔，維持皮膚自然平衡狀態。"},
+                {title: "基礎保濕",icon: "fas fa-tint",content: "使用輕盈的保濕產品，維持皮膚水潤度。根據季節調整保濕產品，夏季清爽，冬季滋潤一些。"},
+                {title: "防曬",icon: "fas fa-sun",content: "每天使用SPF30以上的防曬霜，預防光老化和色素沉澱。選擇質地舒適的防曬產品。"},
+                {title: "維持健康",icon: "fas fa-heart",content: "保持規律作息和健康飲食，定期運動。即使膚質良好，也要避免不良習慣破壞皮膚平衡。"}
             ],
             sensitive: [
-                {
-                    title: "溫和清潔",
-                    icon: "fas fa-pump-soap",
-                    content: "使用專為敏感肌設計的潔面產品，無香料、無酒精。清潔時動作輕柔，避免摩擦。"
-                },
-                {
-                    title: "舒緩保濕",
-                    icon: "fas fa-tint",
-                    content: "選擇含有舒緩成分如積雪草、神經酰胺、燕麥提取物的保濕產品。避免複雜成分和香精。"
-                },
-                {
-                    title: "防曬",
-                    icon: "fas fa-sun",
-                    content: "使用物理性防曬（含氧化鋅或二氧化鈦），較少引起刺激。每天防曬，避免紫外線加重敏感。"
-                },
-                {
-                    title: "特殊護理",
-                    icon: "fas fa-heart",
-                    content: "使用新產品前先做皮膚測試。避免使用去角質產品和刺激性成分（如酒精、酸類）。盡量簡化護膚步驟。"
-                }
+                {title: "溫和清潔",icon: "fas fa-pump-soap",content: "使用專為敏感肌設計的潔面產品，無香料、無酒精。清潔時動作輕柔，避免摩擦。"},
+                {title: "舒緩保濕",icon: "fas fa-tint",content: "選擇含有舒緩成分如積雪草、神經酰胺、燕麥提取物的保濕產品。避免複雜成分和香精。"},
+                {title: "防曬",icon: "fas fa-sun",content: "使用物理性防曬（含氧化鋅或二氧化鈦），較少引起刺激。每天防曬，避免紫外線加重敏感。"},
+                {title: "特殊護理",icon: "fas fa-heart",content: "使用新產品前先做皮膚測試。避免使用去角質產品和刺激性成分（如酒精、酸類）。盡量簡化護膚步驟。"}
             ]
         };
 
         // 飲食建議
         const dietAdvice = {
             dry: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "富含Omega-3的食物（鮭魚、亞麻籽）、堅果、酪梨、橄欖油、深綠色蔬菜、胡蘿蔔、地瓜。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "咖啡因、酒精、過鹹食物、油炸食品，這些會加速水分流失。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，可加入檸檬片或黃瓜片增加風味。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "維生素E、Omega-3脂肪酸、玻尿酸補充劑有助皮膚保濕。"
-                }
+                {title: "宜多食",icon: "fas fa-check-circle",content: "富含Omega-3的食物（鮭魚、亞麻籽）、堅果、酪梨、橄欖油、深綠色蔬菜、胡蘿蔔、地瓜。"},
+                {title: "宜少食",icon: "fas fa-times-circle",content: "咖啡因、酒精、過鹹食物、油炸食品，這些會加速水分流失。"},
+                {title: "飲水",icon: "fas fa-glass-whiskey",content: "每天喝足2000ml水，可加入檸檬片或黃瓜片增加風味。"},
+                {title: "營養補充",icon: "fas fa-capsules",content: "維生素E、Omega-3脂肪酸、玻尿酸補充劑有助皮膚保濕。"}
             ],
             oily: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "富含鋅的食物（南瓜籽、扁豆）、富含維生素A的食物（胡蘿蔔、菠菜）、全穀類、綠葉蔬菜。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "高糖食物、乳製品（特別是脫脂牛奶）、油炸食品、辛辣食物，這些可能刺激皮脂分泌。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，可喝綠茶幫助調節皮脂分泌。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "鋅、維生素B群、益生菌有助調節皮脂分泌和腸道健康。"
-                }
+                {title: "宜多食",icon: "fas fa-check-circle",content: "富含鋅的食物（南瓜籽、扁豆）、富含維生素A的食物（胡蘿蔔、菠菜）、全穀類、綠葉蔬菜。"},
+                {title: "宜少食",icon: "fas fa-times-circle",content: "高糖食物、乳製品（特別是脫脂牛奶）、油炸食品、辛辣食物，這些可能刺激皮脂分泌。"},
+                {title: "飲水",icon: "fas fa-glass-whiskey",content: "每天喝足2000ml水，可喝綠茶幫助調節皮脂分泌。"},
+                {title: "營養補充",icon: "fas fa-capsules",content: "鋅、維生素B群、益生菌有助調節皮脂分泌和腸道健康。"}
             ],
             combination: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "富含維生素C的食物（奇異果、甜椒）、富含抗氧化物的食物（莓果、綠茶）、Omega-3脂肪酸。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "過油過鹹食物、精製糖、加工食品，這些可能加劇T字區出油。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，保持身體水分平衡。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "維生素B群、鋅、Omega-3脂肪酸有助調節皮膚狀態。"
-                }
+                {title: "宜多食",icon: "fas fa-check-circle",content: "富含維生素C的食物（奇異果、甜椒）、富含抗氧化物的食物（莓果、綠茶）、Omega-3脂肪酸。"},
+                {title: "宜少食",icon: "fas fa-times-circle",content: "過油過鹹食物、精製糖、加工食品，這些可能加劇T字區出油。"},
+                {title: "飲水",icon: "fas fa-glass-whiskey",content: "每天喝足2000ml水，保持身體水分平衡。"},
+                {title: "營養補充",icon: "fas fa-capsules",content: "維生素B群、鋅、Omega-3脂肪酸有助調節皮膚狀態。"}
             ],
             normal: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "各種顏色的蔬果、優質蛋白質（魚、豆類）、全穀類、健康脂肪（堅果、橄欖油）。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "過量加工食品、含糖飲料、酒精，這些可能破壞皮膚健康平衡。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，維持身體和皮膚的良好狀態。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "綜合維生素、抗氧化劑（維生素C、E）有助維持皮膚健康。"
-                }
+                {title: "宜多食",icon: "fas fa-check-circle",content: "各種顏色的蔬果、優質蛋白質（魚、豆類）、全穀類、健康脂肪（堅果、橄欖油）。"},
+                {title: "宜少食",icon: "fas fa-times-circle",content: "過量加工食品、含糖飲料、酒精，這些可能破壞皮膚健康平衡。"},
+                {title: "飲水",icon: "fas fa-glass-whiskey",content: "每天喝足2000ml水，維持身體和皮膚的良好狀態。"},
+                {title: "營養補充",icon: "fas fa-capsules",content: "綜合維生素、抗氧化劑（維生素C、E）有助維持皮膚健康。"}
             ],
             sensitive: [
-                {
-                    title: "宜多食",
-                    icon: "fas fa-check-circle",
-                    content: "富含抗氧化物的食物（莓果、綠葉蔬菜）、富含Omega-3的食物（鮭魚、核桃）、薑黃、益生菌食物（優格、泡菜）。"
-                },
-                {
-                    title: "宜少食",
-                    icon: "fas fa-times-circle",
-                    content: "可能引起過敏的食物（如蝦、蟹、芒果等，視個人情況而定）、辛辣食物、酒精、加工食品。"
-                },
-                {
-                    title: "飲水",
-                    icon: "fas fa-glass-whiskey",
-                    content: "每天喝足2000ml水，可喝洋甘菊茶幫助舒緩。"
-                },
-                {
-                    title: "營養補充",
-                    icon: "fas fa-capsules",
-                    content: "益生菌、Omega-3脂肪酸、槲皮素（quercetin）有助減輕過敏反應。"
-                }
+                {title: "宜多食",icon: "fas fa-check-circle",content: "富含抗氧化物的食物（莓果、綠葉蔬菜）、富含Omega-3的食物（鮭魚、核桃）、薑黃、益生菌食物（優格、泡菜）。"},
+                {title: "宜少食",icon: "fas fa-times-circle",content: "可能引起過敏的食物（如蝦、蟹、芒果等，視個人情況而定）、辛辣食物、酒精、加工食品。"},
+                {title: "飲水",icon: "fas fa-glass-whiskey",content: "每天喝足2000ml水，可喝洋甘菊茶幫助舒緩。"},
+                {title: "營養補充",icon: "fas fa-capsules",content: "益生菌、Omega-3脂肪酸、槲皮素（quercetin）有助減輕過敏反應。"}
             ]
         };
 
@@ -1124,23 +968,21 @@
                 optionDiv.dataset.value = option.value;
                 
                 optionDiv.addEventListener('click', () => {
-                    // 移除所有選項的選中狀態
                     optionsDiv.querySelectorAll('.option').forEach(opt => {
                         opt.classList.remove('selected');
                     });
                     
-                    // 選中當前選項
                     optionDiv.classList.add('selected');
                     
-                    // 保存答案
                     if (questionData.id <= 6) {
                         userAnswers[questionData.id] = option.value;
                     } else {
                         advancedAnswers[questionData.id] = option.value;
                     }
                     
-                    // 啟用下一題按鈕
+                    // 只要選了答案就啟用相關按鈕
                     nextBtn.disabled = false;
+                    submitBtn.disabled = false;
                 });
                 
                 optionsDiv.appendChild(optionDiv);
@@ -1150,55 +992,85 @@
             questionDiv.appendChild(optionsDiv);
             questionContainer.appendChild(questionDiv);
             
-            // 更新按鈕狀態
             updateButtonStates();
         }
 
         // 更新進度條
         function updateProgress() {
-            const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+            const displayTotal = showAdvanced ? 10 : 6;
             const answeredCount = Object.keys(userAnswers).length + Object.keys(advancedAnswers).length;
-            const progress = (answeredCount / questions.length) * 100;
+            
+            // 確保進度不超過100%
+            const progress = Math.min((answeredCount / displayTotal) * 100, 100);
             
             progressFill.style.width = `${progress}%`;
-            progressText.textContent = `${answeredCount}/${questions.length}`;
+            progressText.textContent = `${answeredCount}/${displayTotal}`;
         }
 
-        // 更新按鈕狀態
+        // 更新按鈕狀態 (優化邏輯)
         function updateButtonStates() {
             const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
-            const answeredCount = Object.keys(userAnswers).length + Object.keys(advancedAnswers).length;
+            const currentId = questions[currentQuestionIndex].id;
+            const isAnswered = currentId <= 6 ? userAnswers[currentId] : advancedAnswers[currentId];
             
-            // 上一題按鈕
+            // 1. 上一題：第一題時禁用
             prevBtn.disabled = currentQuestionIndex === 0;
             
-            // 下一題/提交按鈕
-            if (currentQuestionIndex === questions.length - 1) {
+            // 2. 下一題與提交按鈕的邏輯
+            const isBasicFinal = (currentQuestionIndex === 5); // 第6題
+            const isAdvancedFinal = (currentQuestionIndex === 9); // 第10題
+            
+            // 默認顯示下一題，隱藏提交
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'flex';
+            nextBtn.disabled = !isAnswered;
+            
+            if (isBasicFinal) {
+                // 第6題 (基礎題最後一題)
+                // 顯示「提交按鈕」 (允許直接看結果)
+                submitBtn.style.display = 'flex';
+                submitBtn.disabled = !isAnswered;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> 查看基礎結果';
+                
+                // 下一題按鈕變成 "進階分析"
+                nextBtn.innerHTML = '進階分析 (+4題) <i class="fas fa-arrow-right"></i>';
+                
+            } else if (isAdvancedFinal) {
+                // 第10題 (進階題最後一題)
+                // 隱藏下一題，只顯示提交
                 nextBtn.style.display = 'none';
                 submitBtn.style.display = 'flex';
-                submitBtn.disabled = answeredCount < questions.length;
+                submitBtn.disabled = !isAnswered;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> 查看完整結果';
+                
             } else {
-                nextBtn.style.display = 'flex';
-                submitBtn.style.display = 'none';
-                
-                // 檢查當前問題是否已回答
-                const currentQuestionId = questions[currentQuestionIndex].id;
-                const isAnswered = currentQuestionId <= 6 ? 
-                    userAnswers[currentQuestionId] : 
-                    advancedAnswers[currentQuestionId];
-                
-                nextBtn.disabled = !isAnswered;
+                // 普通題目
+                nextBtn.innerHTML = '下一題 <i class="fas fa-arrow-right"></i>';
             }
         }
 
-        // 下一題
+        // 下一題 (包含開啟進階檢測的邏輯)
         function goToNextQuestion() {
-            const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
-            
-            if (currentQuestionIndex < questions.length - 1) {
+            if (currentQuestionIndex === 5 && !showAdvanced) {
+                // 使用者在第6題點擊了 "進階分析"
+                showAdvanced = true;
+                
+                // 更新UI狀態
+                toggleAdvancedBtn.innerHTML = '<i class="fas fa-minus-circle"></i><span>隱藏進階檢測</span>';
+                advancedQuestionsContainer.classList.add('active');
+                
+                // 進入下一題
                 currentQuestionIndex++;
                 displayQuestion(currentQuestionIndex);
                 updateProgress();
+            } else {
+                // 正常下一題邏輯
+                const questions = showAdvanced ? [...basicQuestions, ...advancedQuestions] : basicQuestions;
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion(currentQuestionIndex);
+                    updateProgress();
+                }
             }
         }
 
@@ -1211,7 +1083,7 @@
             }
         }
 
-        // 切換進階問題
+        // 切換進階問題 (保留此功能以供手動切換)
         function toggleAdvancedQuestions() {
             showAdvanced = !showAdvanced;
             
@@ -1219,58 +1091,47 @@
                 toggleAdvancedBtn.innerHTML = '<i class="fas fa-minus-circle"></i><span>隱藏進階檢測</span>';
                 advancedQuestionsContainer.classList.add('active');
                 
-                // 顯示第一個進階問題
+                // 如果已經做完基礎題，直接跳到進階第一題
                 if (Object.keys(userAnswers).length === basicQuestions.length) {
-                    currentQuestionIndex = basicQuestions.length;
-                    displayQuestion(currentQuestionIndex);
+                    currentQuestionIndex = basicQuestions.length; 
                 }
             } else {
                 toggleAdvancedBtn.innerHTML = '<i class="fas fa-plus-circle"></i><span>進階檢測（皮膚狀態分析）</span>';
                 advancedQuestionsContainer.classList.remove('active');
                 
-                // 回到最後一個基礎問題
-                currentQuestionIndex = Math.min(currentQuestionIndex, basicQuestions.length - 1);
-                displayQuestion(currentQuestionIndex);
+                // 如果當前在進階題目，回到基礎題最後一題
+                if (currentQuestionIndex >= basicQuestions.length) {
+                    currentQuestionIndex = basicQuestions.length - 1;
+                }
             }
             
+            displayQuestion(currentQuestionIndex);
             updateProgress();
-            updateButtonStates();
         }
 
         // 提交測驗
         function submitTest() {
-            // 計算皮膚類型
             skinType = calculateSkinType();
-            
-            // 顯示結果
             showResults();
             
             // 顯示下載和Line推廣區域
             resultsDownloadSection.style.display = 'block';
             linePromotionSection.style.display = 'block';
+            
+            // 滾動到結果區域頂部
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
         }
 
         // 計算皮膚類型
         function calculateSkinType() {
-            // 簡單的計分系統
-            const scores = {
-                dry: 0,
-                oily: 0,
-                combination: 0,
-                normal: 0,
-                sensitive: 0
-            };
+            const scores = { dry: 0, oily: 0, combination: 0, normal: 0, sensitive: 0 };
             
-            // 計算基礎問題得分
             Object.values(userAnswers).forEach(answer => {
-                if (scores[answer] !== undefined) {
-                    scores[answer]++;
-                }
+                if (scores[answer] !== undefined) scores[answer]++;
             });
             
-            // 找出最高分的皮膚類型
             let maxScore = 0;
-            let detectedSkinType = 'normal'; // 默認值
+            let detectedSkinType = 'normal';
             
             for (const [type, score] of Object.entries(scores)) {
                 if (score > maxScore) {
@@ -1279,7 +1140,6 @@
                 }
             }
             
-            // 保存用戶結果
             userResults = {
                 skinType: detectedSkinType,
                 skinTypeName: skinTypeResults[detectedSkinType].name,
@@ -1296,49 +1156,36 @@
         function showResults() {
             const result = skinTypeResults[skinType];
             
-            // 顯示皮膚類型
             skinTypeResult.innerHTML = `
-                <div class="skin-icon">
-                    <i class="${result.icon}"></i>
-                </div>
+                <div class="skin-icon"><i class="${result.icon}"></i></div>
                 <div class="skin-info">
                     <h3>${result.name}</h3>
                     <p>${result.description}</p>
                 </div>
             `;
             
-            // 顯示護膚建議
             skincareAdviceContainer.innerHTML = '';
             skincareAdvice[skinType].forEach(advice => {
                 const adviceCard = document.createElement('div');
                 adviceCard.className = 'advice-card';
-                adviceCard.innerHTML = `
-                    <h4><i class="${advice.icon}"></i> ${advice.title}</h4>
-                    <p>${advice.content}</p>
-                `;
+                adviceCard.innerHTML = `<h4><i class="${advice.icon}"></i> ${advice.title}</h4><p>${advice.content}</p>`;
                 skincareAdviceContainer.appendChild(adviceCard);
             });
             
-            // 顯示飲食建議
             dietAdviceContainer.innerHTML = '';
             dietAdvice[skinType].forEach(advice => {
                 const adviceCard = document.createElement('div');
                 adviceCard.className = 'advice-card';
-                adviceCard.innerHTML = `
-                    <h4><i class="${advice.icon}"></i> ${advice.title}</h4>
-                    <p>${advice.content}</p>
-                `;
+                adviceCard.innerHTML = `<h4><i class="${advice.icon}"></i> ${advice.title}</h4><p>${advice.content}</p>`;
                 dietAdviceContainer.appendChild(adviceCard);
             });
             
-            // 顯示人格分析
             personalityResult.innerHTML = `
                 <h3><i class="fas fa-user-circle"></i> 膚質人格分析</h3>
                 <p>${result.personality}</p>
                 <p style="margin-top: 15px; font-style: italic; color: #666;">這項分析結合了皮膚特性與常見的人格特質關聯，僅供趣味參考。</p>
             `;
             
-            // 顯示結果區域
             document.querySelector('.card').style.display = 'none';
             resultsContainer.style.display = 'block';
         }
@@ -1351,64 +1198,46 @@
 
         // 下載結果
         function downloadResults() {
-            // 創建PDF內容
             const result = skinTypeResults[skinType];
             const now = new Date();
             const timestamp = now.toLocaleString('zh-TW');
             
-            // 創建PDF內容
             const pdfContent = `
-                ============================================
-                Berji肌膚您的管理小助手 - 檢測報告
-                生成時間: ${timestamp}
-                ============================================
-                
-                您的皮膚類型: ${result.name}
-                
-                皮膚描述:
-                ${result.description}
-                
-                ============================================
-                護膚建議:
-                ============================================
-                ${skincareAdvice[skinType].map(advice => `
-                ${advice.title}:
-                ${advice.content}
-                `).join('\n')}
-                
-                ============================================
-                飲食建議:
-                ============================================
-                ${dietAdvice[skinType].map(advice => `
-                ${advice.title}:
-                ${advice.content}
-                `).join('\n')}
-                
-                ============================================
-                膚質人格分析:
-                ============================================
-                ${result.personality}
-                
-                ============================================
-                您的回答記錄:
-                ============================================
-                ${Object.entries(userResults.answers).map(([id, answer]) => {
-                    const allQuestions = [...basicQuestions, ...advancedQuestions];
-                    const question = allQuestions.find(q => q.id == id);
-                    const option = question ? question.options.find(opt => opt.value === answer) : null;
-                    return `問題 ${id}: ${question ? question.question : '未知問題'}
-                    您的答案: ${option ? option.text : answer}`;
-                }).join('\n\n')}
-                
-                ============================================
-                注意事項:
-                ============================================
-                本檢測結果僅供參考，如有皮膚問題請諮詢專業醫師。
-                
-                Berji肌膚您的管理小助手祝您皮膚健康美麗！
+============================================
+Berji肌膚您的管理小助手 - 檢測報告
+生成時間: ${timestamp}
+============================================
+
+您的皮膚類型: ${result.name}
+
+皮膚描述:
+${result.description}
+
+============================================
+護膚建議:
+============================================
+${skincareAdvice[skinType].map(advice => `
+${advice.title}:
+${advice.content}
+`).join('\n')}
+
+============================================
+飲食建議:
+============================================
+${dietAdvice[skinType].map(advice => `
+${advice.title}:
+${advice.content}
+`).join('\n')}
+
+============================================
+膚質人格分析:
+============================================
+${result.personality}
+
+============================================
+Berji肌膚您的管理小助手祝您皮膚健康美麗！
             `;
             
-            // 創建Blob並下載
             const blob = new Blob([pdfContent], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1419,7 +1248,6 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            // 顯示下載成功提示
             const originalText = downloadButton.innerHTML;
             downloadButton.innerHTML = '<i class="fas fa-check"></i> 下載成功！';
             downloadButton.style.backgroundColor = '#2E7D32';
@@ -1439,26 +1267,21 @@
             skinType = "";
             userResults = {};
             
-            // 重置UI
             document.querySelector('.card').style.display = 'block';
             resultsContainer.style.display = 'none';
             resultsDownloadSection.style.display = 'none';
             linePromotionSection.style.display = 'none';
+            
             toggleAdvancedBtn.innerHTML = '<i class="fas fa-plus-circle"></i><span>進階檢測（皮膚狀態分析）</span>';
             advancedQuestionsContainer.classList.remove('active');
             
-            // 重新初始化
             displayQuestion(currentQuestionIndex);
             updateProgress();
             generateBlessing();
         }
 
-        // 頁面加載完成後初始化
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
-
-
-
 
