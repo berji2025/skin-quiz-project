@@ -1376,96 +1376,55 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
       function downloadPngResults() {
     showDownloadLoading(true);
     
+    // 1. 選取目標元素
+    const resultCardElement = document.getElementById('resultCard');
+    
+    // 2. 針對行動裝置優化：先滾動到頂部，確保元素在渲染區域
+    window.scrollTo(0, 0);
+
     setTimeout(() => {
-        const resultCardElement = document.getElementById('resultCard');
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        // 關鍵修正：獲取完整的高度
-        // 先臨時展開所有內容
-        const originalMaxHeight = resultCardElement.style.maxHeight;
-        resultCardElement.style.maxHeight = 'none';
-        
-        // 獲取完整高度
-        const fullHeight = resultCardElement.scrollHeight;
-        
-        console.log('完整高度:', fullHeight);
-        
         const options = {
-            scale: isMobile ? 2 : 2,
+            scale: window.devicePixelRatio || 1, // 根據裝置自動調整解析度，避免手機負擔過重
             useCORS: true,
-            backgroundColor: '#fff5f7',
+            backgroundColor: '#fff5f7', // 硬編碼背景色，防止 CSS 變數失效
             logging: false,
-            // 關鍵：明確指定寬度和高度
-            width: resultCardElement.offsetWidth,
-            height: fullHeight,
-            windowWidth: resultCardElement.offsetWidth,
-            windowHeight: fullHeight,
-            x: 0,
-            y: 0,
-            scrollX: 0,
-            scrollY: 0,
-            // 使用foreignObjectRendering
-            foreignObjectRendering: false, // 改為false可能更好
-            // 禁用可能導致問題的功能
-            removeContainer: true,
-            onclone: function(clonedDoc) {
-                // 在克隆中確保樣式正確
-                const clonedCard = clonedDoc.getElementById('resultCard');
-                if (clonedCard) {
-                    clonedCard.style.maxHeight = 'none';
-                    clonedCard.style.height = 'auto';
-                    clonedCard.style.overflow = 'visible';
-                }
+            // 關鍵：在渲染前將所有 CSS 變數轉換為實際顏色值
+            onclone: (clonedDoc) => {
+                const clonedElement = clonedDoc.getElementById('resultCard');
+                // 強制指定文字顏色，不依賴 CSS 變數
+                clonedElement.style.color = '#333333';
+                const titles = clonedElement.querySelectorAll('.section-title');
+                titles.forEach(t => t.style.color = '#5a4a4f');
             }
         };
         
         html2canvas(resultCardElement, options).then(canvas => {
-            // 恢復原始樣式
-            resultCardElement.style.maxHeight = originalMaxHeight;
-            
-            // 檢查canvas是否完整
-            if (canvas.height < fullHeight * 0.5) {
-                // 如果不完整，使用備用方案
-                alert('圖片生成不完整，請嘗試使用文字檔格式。');
-                showDownloadLoading(false);
-                return;
-            }
-            
-            const image = canvas.toDataURL('image/png', 1.0);
-            
-            if (isMobile) {
-                // 移動設備：顯示圖片讓用戶保存
-                const imgWindow = window.open();
-                imgWindow.document.write(`
-                    <img src="${image}" style="max-width:100%;">
-                    <div style="padding:20px;text-align:center;">
-                        長按圖片 → 儲存圖片
-                    </div>
-                `);
-                showDownloadLoading(false);
-            } else {
-                // 桌面設備：直接下載
+            try {
+                const image = canvas.toDataURL('image/png', 0.9); // 稍微壓縮品質以提高手機相容性
                 const link = document.createElement('a');
                 const now = new Date();
-                const filename = `Berji肌膚檢測報告_${userResults.skinTypeName}_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}.png`;
+                const filename = `Berji肌膚檢測報告_${userResults.skinTypeName}_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}.png`;
                 
                 link.download = filename;
                 link.href = image;
                 link.click();
                 
                 showDownloadSuccess(downloadPngBtn);
-                showDownloadLoading(false);
+            } catch (e) {
+                // 如果是手機版不支援 a.download，則嘗試新視窗開啟圖片讓用戶長按儲存
+                const win = window.open();
+                win.document.write('<img src="' + canvas.toDataURL('image/png') + '" style="width:100%"/>');
             }
-            
-        }).catch(error => {
-            console.error('錯誤:', error);
-            resultCardElement.style.maxHeight = originalMaxHeight;
             showDownloadLoading(false);
-            alert('圖片生成失敗，請嘗試文字檔或網頁格式。');
+        }).catch(error => {
+            console.error('生成圖片時發生錯誤:', error);
+            alert('手機系統限制，請嘗試截圖或下載文字檔。');
+            showDownloadLoading(false);
         });
-        
     }, 500);
 }
+
+
         // 下載完整HTML結果
         function downloadHtmlResults() {
             showDownloadLoading(true);
@@ -1711,6 +1670,3 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
     </script>
 </body>
 </html>
-
-
-
