@@ -1373,37 +1373,41 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
         }
 
         // 下載圖片結果
-     function downloadPngResults() {
+    function downloadPngResults() {
     showDownloadLoading(true);
     
     // 1. 強制讓頁面回到頂部，避免手機版擷取偏移
     window.scrollTo(0, 0);
     
-    // 2. 獲取要擷取的 DOM 元素
     const resultCardElement = document.getElementById('resultCard');
 
-    // 3. 設定 html2canvas 參數
     const options = {
-        scale: 1.5, // 降低 scale (原 2)，減少手機記憶體壓力，避免反白
+        scale: 1.5, // 降低解析度以減少手機記憶體壓力，防止反白
         useCORS: true,
         allowTaint: true,
-        backgroundColor: "#fff5f7", // 強制指定背景色（非變數）
-        logging: true, // 開啟除錯，若失敗可在手機開發者工具查看
-        imageTimeout: 0,
-        // 關鍵：在克隆出的 DOM 中把所有顏色定死
+        backgroundColor: "#fff5f7", // 強制指定背景色（粉色底）
+        logging: false,
         onclone: (clonedDoc) => {
+            // 2. 在克隆出的 DOM 中把所有顏色強制「定死」為實體顏色碼
             const el = clonedDoc.getElementById('resultCard');
-            el.style.color = "#333333"; // 強制指定文字顏色
-            el.style.backgroundColor = "#ffffff";
+            el.style.color = "#333333";
+            el.style.backgroundColor = "#fff5f7";
             
-            // 強制修正標題顏色
+            // 強制修正所有標題顏色（原本是變數 --dark）
             const titles = el.querySelectorAll('.section-title');
             titles.forEach(t => {
                 t.style.color = "#5a4a4f";
                 t.style.borderBottomColor = "#ffb6c1";
             });
 
-            // 移除可能導致渲染出錯的陰影
+            // 強制修正卡片背景與文字
+            const cards = el.querySelectorAll('.advice-card, .personality-section, .skin-type');
+            cards.forEach(c => {
+                c.style.backgroundColor = "#ffffff";
+                c.style.color = "#333333";
+            });
+            
+            // 移除可能導致渲染失敗的陰影與文字裝飾
             const allElements = el.getElementsByTagName("*");
             for (let i = 0; i < allElements.length; i++) {
                 allElements[i].style.textShadow = "none";
@@ -1412,54 +1416,42 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
         }
     };
 
-    // 延遲一小段時間確保 DOM 渲染完成
     setTimeout(() => {
         html2canvas(resultCardElement, options).then(canvas => {
             try {
-                // 將 Canvas 轉換為圖片數據
-                const image = canvas.toDataURL('image/png', 0.8); // 稍微壓縮畫質增加手機相容性
-                
+                const image = canvas.toDataURL('image/png', 0.8);
                 const link = document.createElement('a');
                 const now = new Date();
-                const filename = `Berji檢測報告_${userResults.skinTypeName}_${now.getMonth()+1}${now.getDate()}.png`;
+                const filename = `Berji報告_${now.getMonth()+1}${now.getDate()}.png`;
                 
-                // 行動裝置相容性處理
-                if (navigator.userAgent.match(/iPhone|iPad|iPod|Android/i)) {
-                    // 如果是在行動裝置，直接開新視窗顯示圖片，讓使用者「長按儲存」
-                    // 因為部分手機瀏覽器（如 LINE 內置）不支援自動下載連結
+                // 針對行動裝置優化：如果是手機，則開新分頁讓用戶長按儲存
+                if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                     const imgWin = window.open("");
                     imgWin.document.write(`
                         <html>
-                        <head><title>長按圖片儲存報告</title></head>
-                        <body style="margin:0; background:#f0f0f0; display:flex; flex-direction:column; align-items:center;">
-                            <p style="padding:10px; font-family:sans-serif;">您的報告已產生！請「長按圖片」選擇儲存</p>
-                            <img src="${image}" style="width:100%; max-width:600px; box-shadow:0 0 10px rgba(0,0,0,0.2);">
-                            <button onclick="window.close()" style="margin:20px; padding:10px 20px; border-radius:20px; border:none; background:#ff7bac; color:white;">關閉此視窗</button>
+                        <body style="margin:0; background:#f0f0f0; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;">
+                            <p style="padding:20px; font-size:18px; color:#5a4a4f; font-family:sans-serif;">報告已生成！<br>請<strong>長按下方圖片</strong>選擇「儲存圖片」</p>
+                            <img src="${image}" style="width:95%; max-width:500px; box-shadow:0 0 20px rgba(0,0,0,0.1);">
+                            <button onclick="window.close()" style="margin:30px; padding:15px 40px; border-radius:30px; border:none; background:#ff7bac; color:white; font-size:16px;">回上一頁</button>
                         </body>
                         </html>
                     `);
                 } else {
                     link.download = filename;
                     link.href = image;
-                    document.body.appendChild(link);
                     link.click();
-                    document.body.removeChild(link);
                 }
-                
                 showDownloadSuccess(downloadPngBtn);
             } catch (err) {
-                console.error("圖片產生失敗:", err);
-                alert("手機記憶體不足，請嘗試使用螢幕截圖儲存結果。");
+                alert("圖片產生失敗，請直接截圖畫面。");
             }
             showDownloadLoading(false);
-        }).catch(error => {
-            console.error('Canvas 繪製錯誤:', error);
-            alert('系統忙碌中，請稍後再試。');
+        }).catch(err => {
+            console.error(err);
             showDownloadLoading(false);
         });
-    }, 800);
+    }, 600);
 }
-
 
         // 下載完整HTML結果
         function downloadHtmlResults() {
@@ -1574,6 +1566,25 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
                 border: 1px solid #eee;
             }
         }
+        #resultCard {
+    background-color: #fff5f7 !important; /* 強制背景色 */
+    color: #333333 !important; /* 強制文字顏色 */
+}
+
+#resultCard .section-title {
+    color: #5a4a4f !important;
+}
+
+#resultCard .advice-card, 
+#resultCard .personality-section, 
+#resultCard .skin-type {
+    background-color: #ffffff !important;
+}
+
+/* 避免擷取時遺失 FontAwesome 圖標 */
+.fas, .fab {
+    display: inline-block !important;
+}
     </style>
 </head>
 <body>
@@ -1706,4 +1717,5 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
     </script>
 </body>
 </html>
+
 
