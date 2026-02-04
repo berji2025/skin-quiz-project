@@ -132,4 +132,34 @@ h1 {
     padding: 3px 0;
     margin-bottom: 5px;
     border: none;
+
+}
+@media (max-width: 768px) {
+    #resultCard {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+    
+    /* 確保文字在生成圖片時足夠清晰 */
+    .skin-type, .advice-card, .personality-section, .blessing {
+        background: white !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    }
+    
+    /* 增加文字對比度 */
+    .skin-info h3, .advice-card h4, .section-title, .blessing h3 {
+        color: #333 !important;
+        text-shadow: none !important;
+    }
+    
+    /* 移除可能影響圖片生成的漸變背景 */
+    .skin-type {
+        background: white !important;
+        border-left: 8px solid var(--accent) !important;
+    }
+    
+    .blessing {
+        background: var(--primary) !important;
+    }
 }
