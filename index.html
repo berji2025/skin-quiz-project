@@ -1373,40 +1373,102 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
         }
 
         // 下載圖片結果
-        function downloadPngResults() {
-            showDownloadLoading(true);
+     function downloadPngResults() {
+    showDownloadLoading(true);
+    
+    setTimeout(() => {
+        const resultCardElement = document.getElementById('resultCard');
+        
+        // 檢測是否為移動設備
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        
+        const options = {
+            scale: isMobile ? 3 : 2, // 移動設備上使用更高解析度
+            useCORS: true,
+            backgroundColor: '#fff5f7',
+            logging: false,
+            allowTaint: true,
+            foreignObjectRendering: true,
+            // 針對移動設備的優化設定
+            ...(isMobile && {
+                width: resultCardElement.offsetWidth,
+                height: resultCardElement.offsetHeight,
+                windowWidth: document.documentElement.offsetWidth,
+                windowHeight: document.documentElement.offsetHeight,
+                scrollX: 0,
+                scrollY: 0,
+                x: 0,
+                y: 0
+            })
+        };
+        
+        // 臨時調整樣式以確保圖片質量
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        
+        html2canvas(resultCardElement, options).then(canvas => {
+            // 還原樣式
+            document.body.style.overflow = originalOverflow;
             
-            setTimeout(() => {
-                const resultCardElement = document.getElementById('resultCard');
-                
-                const options = {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#fff5f7',
-                    logging: false
-                };
-                
-                html2canvas(resultCardElement, options).then(canvas => {
-                    const image = canvas.toDataURL('image/png', 1.0);
-                    
-                    const link = document.createElement('a');
-                    const now = new Date();
-                    const filename = `Berji肌膚檢測報告_${userResults.skinTypeName}_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}.png`;
-                    
-                    link.download = filename;
-                    link.href = image;
-                    link.click();
-                    
-                    showDownloadSuccess(downloadPngBtn);
-                    showDownloadLoading(false);
-                }).catch(error => {
-                    console.error('生成圖片時發生錯誤:', error);
-                    alert('生成圖片時發生錯誤，請稍後再試或選擇其他格式下載。');
-                    showDownloadLoading(false);
-                });
-            }, 500);
-        }
-
+            // 創建一個臨時canvas來優化圖片
+            const optimizedCanvas = document.createElement('canvas');
+            const ctx = optimizedCanvas.getContext('2d');
+            
+            // 設定優化後的尺寸
+            const targetWidth = isMobile ? canvas.width : canvas.width;
+            const targetHeight = isMobile ? canvas.height : canvas.height;
+            
+            optimizedCanvas.width = targetWidth;
+            optimizedCanvas.height = targetHeight;
+            
+            // 填充白色背景（解決透明背景問題）
+            ctx.fillStyle = '#fff5f7';
+            ctx.fillRect(0, 0, targetWidth, targetHeight);
+            
+            // 繪製原始canvas內容
+            ctx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
+            
+            // 添加額外的白色邊框，防止文字被裁切
+            ctx.strokeStyle = '#fff5f7';
+            ctx.lineWidth = 20;
+            ctx.strokeRect(0, 0, targetWidth, targetHeight);
+            
+            // 轉換為圖片URL
+            const image = optimizedCanvas.toDataURL('image/png', 1.0);
+            
+            // 創建下載連結
+            const link = document.createElement('a');
+            const now = new Date();
+            const filename = `Berji肌膚檢測報告_${userResults.skinTypeName}_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}.png`;
+            
+            link.download = filename;
+            link.href = image;
+            
+            // 在移動設備上使用不同的下載方式
+            if (isMobile) {
+                // 在移動設備上，打開圖片在新標籤頁
+                window.open(image, '_blank');
+                showDownloadLoading(false);
+                setTimeout(() => {
+                    alert('圖片已生成！請長按圖片並選擇「儲存圖片」來下載。');
+                }, 500);
+            } else {
+                // 在桌面設備上直接下載
+                link.click();
+                showDownloadSuccess(downloadPngBtn);
+                showDownloadLoading(false);
+            }
+            
+        }).catch(error => {
+            console.error('生成圖片時發生錯誤:', error);
+            document.body.style.overflow = originalOverflow;
+            
+            // 顯示友好的錯誤訊息
+            alert('生成圖片時發生錯誤。請嘗試以下解決方案：\n1. 確保網路連線正常\n2. 嘗試切換為文字檔或網頁格式\n3. 刷新頁面後重試');
+            showDownloadLoading(false);
+        });
+    }, 500);
+}
         // 下載完整HTML結果
         function downloadHtmlResults() {
             showDownloadLoading(true);
