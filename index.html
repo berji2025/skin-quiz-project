@@ -618,9 +618,9 @@
                     <h3><i class="fas fa-download"></i> 您的專屬結果已生成</h3>
                     <p>點擊下方下載按鈕，或直接截圖，即可將您的分析結果或專屬報告保存到您的裝置中</p>
                     
-                 <button class="download-button" id="downloadButton">
-    <i class="fas fa-image"></i> 下載專屬美肌報告 (圖片)
-</button>
+                    <button class="download-button" id="downloadButton">
+                        <i class="fas fa-file-alt"></i> 下載測驗結果 (純文字)
+                    </button>
                 </section>
                 
                 <div class="blessing">
@@ -1197,53 +1197,12 @@
         }
 
         // 下載結果
-function downloadResults() {
-    // 選取要截圖的範圍
-    const element = document.getElementById('resultsContainer');
-    const downloadBtn = document.getElementById('downloadButton');
-    
-    // 截圖前暫時隱藏不需要出現在圖片中的按鈕
-    const actionButtons = document.querySelectorAll('#results-download, #restartBtn, .blessing button');
-    actionButtons.forEach(btn => btn.style.display = 'none');
-
-    // 改變按鈕狀態提示使用者
-    const originalText = downloadBtn.innerHTML;
-    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 圖片生成中...';
-
-    // 執行截圖
-    html2canvas(element, {
-        scale: 2, // 提高解析度
-        useCORS: true, 
-        backgroundColor: "#fff5f7", // 背景色
-        scrollY: -window.scrollY // 修正捲動偏移問題
-    }).then(canvas => {
-        // 轉換為圖片數據
-        const imgData = canvas.toDataURL("image/jpeg", 0.9);
-        
-        // 建立下載連結
-        const now = new Date();
-        const fileName = `Berji檢測報告_${userResults.skinTypeName}_${now.getMonth()+1}${now.getDate()}.jpg`;
-        
-        const link = document.createElement('a');
-        link.href = imgData;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        // 恢復 UI 顯示
-        actionButtons.forEach(btn => btn.style.display = '');
-        downloadBtn.innerHTML = '<i class="fas fa-check"></i> 下載成功！';
-        
-        setTimeout(() => {
-            downloadBtn.innerHTML = originalText;
-        }, 2000);
-    }).catch(err => {
-        console.error("截圖出錯:", err);
-        actionButtons.forEach(btn => btn.style.display = '');
-        alert("圖片生成失敗，請直接使用手機截圖保存結果！");
-    });
-}
+        function downloadResults() {
+            const result = skinTypeResults[skinType];
+            const now = new Date();
+            const timestamp = now.toLocaleString('zh-TW');
+            
+            const pdfContent = `
 ============================================
 Berji肌膚您的管理小助手 - 檢測報告
 生成時間: ${timestamp}
@@ -1323,7 +1282,6 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
 
