@@ -1376,287 +1376,96 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
       function downloadPngResults() {
     showDownloadLoading(true);
     
-    // 給DOM一點時間更新
     setTimeout(() => {
         const resultCardElement = document.getElementById('resultCard');
-        
-        // 檢測是否為移動設備
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         
-        // 臨時保存滾動位置
-        const originalScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // 滾動到結果區域頂部，確保完全可見
-        resultCardElement.scrollIntoView({ behavior: 'instant', block: 'start' });
-        
-        // 臨時隱藏可能干擾的元素
-        const elementsToHide = document.querySelectorAll('.btn, #restartBtn, #newBlessingBtn, #line-promotion');
-        const originalDisplay = [];
-        elementsToHide.forEach((el, index) => {
-            originalDisplay[index] = el.style.display;
-            el.style.display = 'none';
-        });
-        
-        // 臨時調整結果卡片樣式以確保完整顯示
-        const originalCardStyle = {
-            marginTop: resultCardElement.style.marginTop,
-            marginBottom: resultCardElement.style.marginBottom,
-            maxHeight: resultCardElement.style.maxHeight
-        };
-        
-        // 移除最大高度限制，讓內容自然展開
+        // 關鍵修正：獲取完整的高度
+        // 先臨時展開所有內容
+        const originalMaxHeight = resultCardElement.style.maxHeight;
         resultCardElement.style.maxHeight = 'none';
-        resultCardElement.style.marginTop = '10px';
-        resultCardElement.style.marginBottom = '20px';
         
-        // 強制瀏覽器重新計算佈局
-        void resultCardElement.offsetHeight;
+        // 獲取完整高度
+        const fullHeight = resultCardElement.scrollHeight;
         
-        // 計算實際需要的尺寸（包含滾動內容）
-        const scrollHeight = resultCardElement.scrollHeight;
-        const clientHeight = resultCardElement.clientHeight;
-        const actualHeight = Math.max(scrollHeight, clientHeight);
+        console.log('完整高度:', fullHeight);
         
-        console.log('元素高度:', {
-            scrollHeight,
-            clientHeight,
-            actualHeight,
-            offsetHeight: resultCardElement.offsetHeight
-        });
-        
-        // 設定html2canvas選項
         const options = {
-            scale: isMobile ? 3 : 2, // 移動設備使用更高解析度
+            scale: isMobile ? 2 : 2,
             useCORS: true,
             backgroundColor: '#fff5f7',
-            logging: true, // 開啟日誌用於調試
-            allowTaint: true,
-            foreignObjectRendering: true,
+            logging: false,
+            // 關鍵：明確指定寬度和高度
             width: resultCardElement.offsetWidth,
-            height: actualHeight + 100, // 添加額外邊距
-            windowWidth: document.documentElement.clientWidth,
-            windowHeight: Math.max(
-                document.documentElement.clientHeight,
-                actualHeight + 200
-            ),
-            scrollX: 0,
-            scrollY: 0,
+            height: fullHeight,
+            windowWidth: resultCardElement.offsetWidth,
+            windowHeight: fullHeight,
             x: 0,
             y: 0,
+            scrollX: 0,
+            scrollY: 0,
+            // 使用foreignObjectRendering
+            foreignObjectRendering: false, // 改為false可能更好
+            // 禁用可能導致問題的功能
+            removeContainer: true,
             onclone: function(clonedDoc) {
-                // 在克隆的文檔中也進行樣式調整
+                // 在克隆中確保樣式正確
                 const clonedCard = clonedDoc.getElementById('resultCard');
                 if (clonedCard) {
                     clonedCard.style.maxHeight = 'none';
+                    clonedCard.style.height = 'auto';
                     clonedCard.style.overflow = 'visible';
-                    
-                    // 確保所有內容可見
-                    const allElements = clonedCard.querySelectorAll('*');
-                    allElements.forEach(el => {
-                        el.style.overflow = 'visible';
-                        el.style.maxHeight = 'none';
-                    });
                 }
             }
         };
         
-        console.log('html2canvas選項:', options);
-        
-        // 給瀏覽器一點時間完成樣式調整
-        setTimeout(() => {
-            html2canvas(resultCardElement, options).then(canvas => {
-                console.log('Canvas尺寸:', canvas.width, 'x', canvas.height);
-                
-                // 檢查canvas是否完整
-                if (canvas.height < actualHeight * (isMobile ? 3 : 2) * 0.5) {
-                    console.warn('Canvas高度可能不足，嘗試備用方案');
-                    
-                    // 備用方案：分段截圖
-                    captureFullPageScreenshot(resultCardElement, isMobile)
-                        .then(fullCanvas => {
-                            finishDownload(fullCanvas, isMobile);
-                        })
-                        .catch(err => {
-                            console.error('分段截圖失敗:', err);
-                            // 恢復原始狀態
-                            restoreOriginalState();
-                            showDownloadLoading(false);
-                            alert('生成完整圖片失敗，請嘗試使用文字檔或網頁格式。');
-                        });
-                } else {
-                    // 正常流程
-                    finishDownload(canvas, isMobile);
-                }
-                
-            }).catch(error => {
-                console.error('html2canvas錯誤:', error);
-                
-                // 恢復原始狀態
-                restoreOriginalState();
+        html2canvas(resultCardElement, options).then(canvas => {
+            // 恢復原始樣式
+            resultCardElement.style.maxHeight = originalMaxHeight;
+            
+            // 檢查canvas是否完整
+            if (canvas.height < fullHeight * 0.5) {
+                // 如果不完整，使用備用方案
+                alert('圖片生成不完整，請嘗試使用文字檔格式。');
                 showDownloadLoading(false);
-                
-                // 提供替代方案
-                if (isMobile) {
-                    const userChoice = confirm('圖片生成失敗。建議您：\n\n1. 使用文字檔或網頁格式\n2. 或使用手機截圖功能\n\n是否要嘗試手機截圖？');
-                    if (userChoice) {
-                        alert('請手動滾動到結果區域，然後使用手機的截圖功能（通常電源鍵+音量下鍵）。');
-                    }
-                } else {
-                    alert('圖片生成失敗，請稍後再試或使用其他格式。');
-                }
-            });
-            
-            // 恢復原始狀態的函數
-            function restoreOriginalState() {
-                // 恢復滾動位置
-                window.scrollTo(0, originalScrollTop);
-                
-                // 恢復隱藏的元素
-                elementsToHide.forEach((el, index) => {
-                    el.style.display = originalDisplay[index] || '';
-                });
-                
-                // 恢復卡片樣式
-                resultCardElement.style.marginTop = originalCardStyle.marginTop;
-                resultCardElement.style.marginBottom = originalCardStyle.marginBottom;
-                resultCardElement.style.maxHeight = originalCardStyle.maxHeight;
+                return;
             }
             
-            // 完成下載的函數
-            function finishDownload(canvas, isMobile) {
-                // 創建優化後的canvas
-                const optimizedCanvas = document.createElement('canvas');
-                const ctx = optimizedCanvas.getContext('2d');
+            const image = canvas.toDataURL('image/png', 1.0);
+            
+            if (isMobile) {
+                // 移動設備：顯示圖片讓用戶保存
+                const imgWindow = window.open();
+                imgWindow.document.write(`
+                    <img src="${image}" style="max-width:100%;">
+                    <div style="padding:20px;text-align:center;">
+                        長按圖片 → 儲存圖片
+                    </div>
+                `);
+                showDownloadLoading(false);
+            } else {
+                // 桌面設備：直接下載
+                const link = document.createElement('a');
+                const now = new Date();
+                const filename = `Berji肌膚檢測報告_${userResults.skinTypeName}_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}.png`;
                 
-                // 設定尺寸
-                optimizedCanvas.width = canvas.width;
-                optimizedCanvas.height = canvas.height;
+                link.download = filename;
+                link.href = image;
+                link.click();
                 
-                // 填充背景色
-                ctx.fillStyle = '#fff5f7';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // 繪製原始內容
-                ctx.drawImage(canvas, 0, 0);
-                
-                // 添加白色邊框
-                ctx.strokeStyle = '#fff5f7';
-                ctx.lineWidth = 10;
-                ctx.strokeRect(0, 0, canvas.width, canvas.height);
-                
-                // 轉換為圖片
-                const image = optimizedCanvas.toDataURL('image/png', 1.0);
-                
-                // 恢復原始狀態
-                restoreOriginalState();
-                
-                // 下載或顯示圖片
-                if (isMobile) {
-                    // 移動設備：在新視窗打開圖片
-                    const newWindow = window.open();
-                    newWindow.document.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <title>您的肌膚檢測結果</title>
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <style>
-                                body { margin: 0; padding: 20px; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-                                img { max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-                                .instructions { 
-                                    position: fixed; 
-                                    bottom: 20px; 
-                                    left: 20px; 
-                                    right: 20px; 
-                                    background: white; 
-                                    padding: 15px; 
-                                    border-radius: 10px; 
-                                    box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-                                    text-align: center;
-                                    font-size: 14px;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <img src="${image}" alt="肌膚檢測結果">
-                            <div class="instructions">
-                                💡 長按圖片 → 選擇「儲存圖片」<br>
-                                <small>或使用截圖功能保存此頁面</small>
-                            </div>
-                        </body>
-                        </html>
-                    `);
-                    showDownloadLoading(false);
-                } else {
-                    // 桌面設備：直接下載
-                    const link = document.createElement('a');
-                    const now = new Date();
-                    const filename = `Berji肌膚檢測報告_${userResults.skinTypeName}_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2, '0')}${now.getDate().toString().padStart(2, '0')}.png`;
-                    
-                    link.download = filename;
-                    link.href = image;
-                    link.click();
-                    
-                    showDownloadSuccess(downloadPngBtn);
-                    showDownloadLoading(false);
-                }
+                showDownloadSuccess(downloadPngBtn);
+                showDownloadLoading(false);
             }
             
-            // 分段截圖函數（備用方案）
-            async function captureFullPageScreenshot(element, isMobile) {
-                const totalHeight = element.scrollHeight;
-                const viewportHeight = window.innerHeight;
-                const scale = isMobile ? 3 : 2;
-                
-                // 計算需要多少段
-                const slices = Math.ceil(totalHeight / (viewportHeight * 0.8));
-                
-                console.log(`分段截圖: 總高度=${totalHeight}, 段數=${slices}`);
-                
-                // 創建最終canvas
-                const finalCanvas = document.createElement('canvas');
-                finalCanvas.width = element.offsetWidth * scale;
-                finalCanvas.height = totalHeight * scale + 100; // 添加邊距
-                const ctx = finalCanvas.getContext('2d');
-                
-                // 填充背景
-                ctx.fillStyle = '#fff5f7';
-                ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-                
-                // 分段截圖並合併
-                for (let i = 0; i < slices; i++) {
-                    // 滾動到當前段
-                    element.scrollTop = i * viewportHeight * 0.8;
-                    
-                    // 等待滾動完成
-                    await new Promise(resolve => setTimeout(resolve, 300));
-                    
-                    // 截取當前段
-                    const sliceCanvas = await html2canvas(element, {
-                        scale: scale,
-                        useCORS: true,
-                        backgroundColor: '#fff5f7',
-                        x: 0,
-                        y: -element.scrollTop,
-                        height: viewportHeight * 0.8,
-                        windowHeight: viewportHeight
-                    });
-                    
-                    // 繪製到最終canvas
-                    ctx.drawImage(sliceCanvas, 0, i * viewportHeight * 0.8 * scale);
-                }
-                
-                // 恢復滾動位置
-                element.scrollTop = 0;
-                
-                return finalCanvas;
-            }
-            
-        }, 500); // 給更多時間確保樣式生效
+        }).catch(error => {
+            console.error('錯誤:', error);
+            resultCardElement.style.maxHeight = originalMaxHeight;
+            showDownloadLoading(false);
+            alert('圖片生成失敗，請嘗試文字檔或網頁格式。');
+        });
         
-    }, 300);
+    }, 500);
 }
-
         // 下載完整HTML結果
         function downloadHtmlResults() {
             showDownloadLoading(true);
@@ -1902,5 +1711,6 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
     </script>
 </body>
 </html>
+
 
 
