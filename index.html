@@ -1373,6 +1373,75 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
         }
 
         // 下載圖片結果
+        function prepareForScreenshot() {
+    // 儲存原始樣式
+    const originalStyles = {};
+    const elementsToFix = [
+        '.skin-type',
+        '.advice-card',
+        '.personality-section',
+        '.blessing',
+        '#resultCard'
+    ];
+    
+    elementsToFix.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((el, index) => {
+            const key = `${selector}_${index}`;
+            originalStyles[key] = {
+                background: el.style.background,
+                backgroundColor: el.style.backgroundColor,
+                backgroundImage: el.style.backgroundImage,
+                color: el.style.color
+            };
+            
+            // 應用優化樣式
+            if (selector === '.skin-type') {
+                el.style.background = 'white';
+                el.style.backgroundImage = 'none';
+            } else if (selector === '.advice-card' || selector === '.personality-section') {
+                el.style.background = 'white';
+                el.style.backgroundColor = 'white';
+            } else if (selector === '.blessing') {
+                el.style.background = 'linear-gradient(to right, #ffb6c1, #ff7bac)';
+            }
+            
+            // 確保文字顏色足夠深
+            const textElements = el.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, div');
+            textElements.forEach(textEl => {
+                const currentColor = window.getComputedStyle(textEl).color;
+                if (currentColor) {
+                    const rgb = currentColor.match(/\d+/g);
+                    if (rgb) {
+                        const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+                        if (brightness > 150) { // 如果顏色太淺
+                            textEl.style.color = '#333333';
+                        }
+                    }
+                }
+            });
+        });
+    });
+    
+    return originalStyles; // 返回原始樣式以便恢復
+}
+
+function restoreStyles(originalStyles) {
+    // 恢復原始樣式
+    Object.keys(originalStyles).forEach(key => {
+        const [selector, index] = key.split('_');
+        const elements = document.querySelectorAll(selector);
+        if (elements[index]) {
+            const el = elements[index];
+            const styles = originalStyles[key];
+            
+            Object.keys(styles).forEach(styleProp => {
+                el.style[styleProp] = styles[styleProp];
+            });
+        }
+    });
+}
+
         function downloadPngResults() {
             showDownloadLoading(true);
             
@@ -1406,6 +1475,7 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
                 });
             }, 500);
         }
+        
 
         // 下載完整HTML結果
         function downloadHtmlResults() {
@@ -1652,3 +1722,4 @@ Berji肌膚您的管理小助手祝您皮膚健康美麗！
     </script>
 </body>
 </html>
+
